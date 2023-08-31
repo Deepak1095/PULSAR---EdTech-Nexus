@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     # Instructor URLs
     path('instructors/', views.list_instructors, name='list-instructors'),
-    path('instructors/create/', views.create_instructor, name='create-instructor'),
+    path('instructors/<int:pk>/', views.instructor_detail, name='instructor-detail'),
 
     # Student URLs
     path('students/', views.list_students, name='list-students'),
