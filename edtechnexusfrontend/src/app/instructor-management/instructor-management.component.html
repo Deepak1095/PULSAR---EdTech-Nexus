@@ -1,1 +1,63 @@
-<p>instructor-management works!</p>
+<h2>Instructor Management</h2>
+
+<!-- Form for creating a new instructor -->
+<div>
+  <h3>Create Instructor</h3>
+  <form (submit)="createInstructor()">
+    <label>Name:</label>
+    <input [(ngModel)]="newInstructor.name" name="name" required><br>
+    <label>Gender:</label>
+    <select [(ngModel)]="newInstructor.gender" name="gender" required>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select><br>
+    <label>Date of Birth:</label>
+    <input type="date" [(ngModel)]="newInstructor.date_of_birth" name="date_of_birth" required><br>
+    <label>Department:</label>
+    <input [(ngModel)]="newInstructor.department" name="department" required><br>
+    <label>Email:</label>
+    <input [(ngModel)]="newInstructor.email" name="email" required><br>
+    <label>Contact Number:</label>
+    <input [(ngModel)]="newInstructor.contact_number" name="contact_number" required><br>
+    <button type="submit">Create Instructor</button>
+  </form>
+</div>
+
+<!-- List of instructors -->
+<div>
+  <h3>List of Instructors</h3>
+  <ul>
+    <div *ngFor="let instructor of instructors">
+        <p>{{ instructor.name }} ({{ instructor.department }})</p>
+        <button (click)="editInstructor(instructor)">Edit</button>
+        <button *ngIf="instructor.id !== undefined" (click)="deleteInstructor(instructor.id)">Delete</button>
+      </div>
+      
+  </ul>
+</div>
+
+<!-- Form for editing an instructor -->
+<div *ngIf="selectedInstructor">
+  <h3>Edit Instructor</h3>
+  <form (submit)="updateInstructor()">
+    <label>Name:</label>
+    <input [(ngModel)]="selectedInstructor.name" name="name" required><br>
+    <label>Gender:</label>
+    <select [(ngModel)]="selectedInstructor.gender" name="gender" required>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select><br>
+    <label>Date of Birth:</label>
+    <input type="date" [(ngModel)]="selectedInstructor.date_of_birth" name="date_of_birth" required><br>
+    <label>Department:</label>
+    <input [(ngModel)]="selectedInstructor.department" name="department" required><br>
+    <label>Email:</label>
+    <input [(ngModel)]="selectedInstructor.email" name="email" required><br>
+    <label>Contact Number:</label>
+    <input [(ngModel)]="selectedInstructor.contact_number" name="contact_number" required><br>
+    <button type="submit">Update Instructor</button>
+    <button (click)="cancelEdit()">Cancel</button>
+  </form>
+</div>
