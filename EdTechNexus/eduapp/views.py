@@ -1,7 +1,7 @@
 from django.http import JsonResponse,HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Instructor
-
+import json
 @csrf_exempt
 def list_instructors(request):
     if request.method == 'GET':
@@ -20,17 +20,18 @@ def list_instructors(request):
             instructor_list.append(instructor_data)
         return JsonResponse(instructor_list, safe=False)
     elif request.method == 'POST':
-        data = {
-            'name': request.POST.get('name'),
-            'gender': request.POST.get('gender'),
-            'date_of_birth': request.POST.get('date_of_birth'),
-            'department': request.POST.get('department'),
-            'email': request.POST.get('email'),
-            'contact_number': request.POST.get('contact_number'),
+        print('hey world')
+        data = json.loads(request.body)
+        InstructorData = {
+            'name': data.get('name'),
+            'gender': data.get('gender'),
+            'date_of_birth': data.get('date_of_birth'),
+            'department': data.get('department'),
+            'email': data.get('email'),
+            'contact_number': data.get('contact_number'),
         }
-        print(data)
-        # instructor = Instructor(**data)
-        # instructor.save()
+        instructor = Instructor(**InstructorData)
+        instructor.save()
         return JsonResponse({'message': 'Instructor created successfully'}, status=201)
 
 @csrf_exempt
@@ -52,12 +53,13 @@ def instructor_detail(request, pk):
         }
         return JsonResponse(instructor_data)
     elif request.method == 'PUT':
-        instructor.name = request.POST.get('name')
-        instructor.gender = request.POST.get('gender')
-        instructor.date_of_birth = request.POST.get('date_of_birth')
-        instructor.department = request.POST.get('department')
-        instructor.email = request.POST.get('email')
-        instructor.contact_number = request.POST.get('contact_number')
+        data=json.loads(request.body)
+        instructor.name = data.get('name')
+        instructor.gender = data.get('gender')
+        instructor.date_of_birth = data.get('date_of_birth')
+        instructor.department = data.get('department')
+        instructor.email = data.get('email')
+        instructor.contact_number = data.get('contact_number')
         instructor.save()
         return JsonResponse({'message': 'Instructor updated successfully'})
     elif request.method == 'DELETE':
