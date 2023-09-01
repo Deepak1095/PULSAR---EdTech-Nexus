@@ -5,11 +5,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { InstructorManagementComponent } from './instructor-management/instructor-management.component';
+import { InstructorCourseManagementComponent } from './instructor-course-management/instructor-course-management.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    InstructorManagementComponent
+    InstructorManagementComponent,
+    InstructorCourseManagementComponent
   ],
   imports: [
     BrowserModule,

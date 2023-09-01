@@ -1,3 +1,13 @@
-<router-outlet>
-  <app-instructor-management></app-instructor-management>
-</router-outlet>
+<nav class="bg-blue-500 py-4 px-4">
+  <div class="container mx-auto">
+    <div class="flex items-center justify-between">
+      <a routerLink="/" class="text-white font-semibold text-lg">EdTechNexus</a>
+      <ul class="flex space-x-4">
+        <li><a routerLink="/instructor-course-management" class="text-white hover:underline">Course Management</a></li>
+        <li><a routerLink="/instructors" class="text-white hover:underline">Instructors</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>
