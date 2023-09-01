@@ -1,6 +1,6 @@
 from django.http import JsonResponse,HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Instructor
+from .models import Instructor,Course
 import json
 @csrf_exempt
 def list_instructors(request):
@@ -79,11 +79,73 @@ def list_students(request):
 # Course views
 @csrf_exempt
 def create_course(request):
-    return HttpResponse('create_course')
+     if request.method == 'GET':
+        courses = Course.objects.all()
+        course_list = []
+        for course in courses:
+            course_data = {
+                'id': course.id,
+                'course_code': course.course_code,
+                'course_name': course.course_name,
+                'department': course.department,
+                'credits': course.credits,
+                'description': course.description
+            }
+            course_list.append(course_data)
+        return JsonResponse(course_list, safe=False)
+     elif request.method == 'POST':
+        data = json.loads(request.body)
+        course_code = data.get('course_code')
+        course_name = data.get('course_name')
+        department = data.get('department')
+        credits = int(data.get('credits'))
+        description = data.get('description')
+        
+        # Create a new course instance and save it to the database
+        new_course = Course(
+            course_code=course_code,
+            course_name=course_name,
+            department=department,
+            credits=credits,
+            description=description
+        )
+        new_course.save()
+        
+        return JsonResponse({'message': 'Course created successfully'}, status=201)
+    
+     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 @csrf_exempt
-def list_courses(request):
-    return HttpResponse('list_courses')
+def course_detail(request, pk):
+    try:
+        course = Course.objects.get(pk=pk)
+    except Course.DoesNotExist:
+        return JsonResponse({'error': 'Course not found'}, status=404)
+
+    if request.method == 'GET':
+        course_data = {
+            'id': course.id,
+            'course_code': course.course_code,
+            'course_name': course.course_name,
+            'department': course.department,
+            'credits': course.credits,
+            'description': course.description
+        }
+        return JsonResponse(course_data)
+    elif request.method == 'PUT':
+        data = json.loads(request.body)
+        print(data)
+        course.course_code = data['course_code']
+        course.course_name = data['course_name']
+        course.department = data['department']
+        course.credits = data['credits']
+        course.description = data['description']
+        course.save()
+        return JsonResponse({'message': 'Course updated successfully'})
+    elif request.method == 'DELETE':
+        course.delete()
+        return JsonResponse({'message': 'Course deleted successfully'}, status=204)
+
 
 # Assignment views
 @csrf_exempt

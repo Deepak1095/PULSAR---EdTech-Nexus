@@ -11,8 +11,8 @@ urlpatterns = [
     path('students/create/', views.create_student, name='create-student'),
 
     # Course URLs
-    path('courses/', views.list_courses, name='list-courses'),
-    path('courses/create/', views.create_course, name='create-course'),
+    path('courses/', views.create_course, name='create-course'),
+    path('courses/<int:pk>/', views.course_detail, name='course-details'),
 
     # Assignment URLs
     path('assignments/', views.list_assignments, name='list-assignments'),
