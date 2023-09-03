@@ -49,12 +49,16 @@
   <h3 class="text-xl font-semibold mb-4">List of Instructors</h3>
   <ul class="space-y-2">
     <div *ngFor="let instructor of instructors" class="flex items-center justify-between bg-white p-3 rounded border">
-      <p class="text-lg">{{ instructor.name }} ({{ instructor.department }})</p>
+      <p class="text-lg truncate sm:truncate md:text-base lg:text-lg">{{ instructor.name }} ({{ instructor.department }})</p>
       <div class="space-x-2">
-        <button (click)="toggleUpdateInstructorForm(instructor)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Edit</button>
-        <button *ngIf="instructor.id !== undefined" (click)="showDeleteConfirmation(instructor)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+        <div class="flex sm:flex-col md:flex-row lg:flex-row">
+          <button (click)="toggleUpdateInstructorForm(instructor)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 mr-2 sm:mr-0 md:mr-2 lg:mr-2">Edit</button>
+          <button *ngIf="instructor.id !== undefined" (click)="showDeleteConfirmation(instructor)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+        </div>
       </div>
     </div>
+    
+    
   </ul>
 </div>
 

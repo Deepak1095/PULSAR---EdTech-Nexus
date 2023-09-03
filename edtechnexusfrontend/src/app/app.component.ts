@@ -7,4 +7,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'edtechnexusfrontend';
+  
+// In your Angular component
+isProfileDropdownOpen = false;
+
+toggleProfileDropdown() {
+  this.isProfileDropdownOpen = !this.isProfileDropdownOpen;
+}
+
 }
