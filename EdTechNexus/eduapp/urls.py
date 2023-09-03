@@ -9,6 +9,8 @@ urlpatterns = [
     # Student URLs
     path('students/', views.list_students, name='list-students'),
     path('students/create/', views.create_student, name='create-student'),
+    path('register/', views.register, name='register'),
+    path('api/login/', views.custom_login, name='custom_login'),
 
     # Course URLs
     path('courses/', views.create_course, name='create-course'),

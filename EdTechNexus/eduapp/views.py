@@ -1,7 +1,72 @@
 from django.http import JsonResponse,HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Instructor,Course
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from .models import Instructor,Course,Student
 import json
+from django.contrib.auth import login, authenticate
+import jwt  # Import JWT library
+# from rest_framework_jwt.settings import api_settings
+
+# jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+# jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+@csrf_exempt
+def register(request):
+    if request.method == 'DELETE':
+        User.objects.all().delete()
+        return JsonResponse({'message': 'All users deleted successfully'})
+    else:
+        return JsonResponse({'message': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def create_student(request):
+    if request.method == 'POST':
+        try:
+            # Parse JSON data from the request body
+            data = json.loads(request.body.decode('utf-8'))
+
+            # Extract data from the JSON object
+            username = data.get('name')
+            password = data.get('password')
+            email = data.get('email')
+            name = data.get('name')
+            gender = data.get('gender')
+            date_of_birth = data.get('date_of_birth')
+            major = data.get('major')
+            contact_number = data.get('contact_number')
+
+            # Check if a user with the same email already exists
+            if User.objects.filter(email=email).exists():
+                return JsonResponse({'message': 'User with the same email already exists'}, status=400)
+
+            # Create a new user
+            user = User.objects.create_user(username=username, password=password, email=email)
+
+            # Log in the user
+            login(request, user)
+
+            # Calculate the next available student_id
+            last_student = Student.objects.order_by('-student_id').first()
+            if last_student:
+                last_student_id = int(last_student.student_id)
+                new_student_id = str(last_student_id + 1).zfill(4)
+            else:
+                # If no students exist yet, start with 1000
+                new_student_id = '1000'
+
+            # Create a new student profile linked to the user
+            student = Student(user=user, name=name, gender=gender, date_of_birth=date_of_birth, major=major,
+                              email=email, contact_number=contact_number, student_id=new_student_id)
+            student.save()
+
+            return JsonResponse({'message': 'User registered successfully'})
+
+        except json.JSONDecodeError as e:
+            return JsonResponse({'message': 'Invalid JSON data'}, status=400)
+
+    return JsonResponse({'message': 'Invalid request'}, status=400)
+
 @csrf_exempt
 def list_instructors(request):
     if request.method == 'GET':
@@ -67,14 +132,63 @@ def instructor_detail(request, pk):
         return JsonResponse({'message': 'Instructor deleted successfully'}, status=204)
 
 
-# Student views
-@csrf_exempt
-def create_student(request):
-    return HttpResponse('create_student')
-
 @csrf_exempt
 def list_students(request):
-    return HttpResponse('list_students')
+    students = Student.objects.all()
+    student_data = []
+
+    for student in students:
+        print(student.user.password)
+        student_data.append({
+            'name': student.name,
+            'gender': student.gender,
+            'date_of_birth': student.date_of_birth,
+            'major': student.major,
+            'contact_number': student.contact_number,
+        })
+
+    return JsonResponse({'students_data': student_data})
+
+# myapp/views.py
+@csrf_exempt
+def custom_login(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            email = data.get('email')
+            password = data.get('password')
+        except ValueError:
+            return JsonResponse({'error': 'Invalid data'}, status=400)
+
+        # Find the user by email
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            user = None
+
+        if user is not None:
+            # Authenticate the user with the provided email and password
+            user = authenticate(request, username=user.username, password=password)
+            if user is not None:
+                # If authentication is successful, generate a JWT token
+                payload = {
+                    'user_id': user.id,
+                    'username': user.username,
+                }
+                jwt_token = jwt.encode(payload, 'your-secret-key', algorithm='HS256')  # Replace 'your-secret-key'
+
+                # Log in the user
+                login(request, user)
+
+                # Convert the bytes JWT token to a string
+                jwt_token_str = jwt_token.decode('utf-8')
+
+                return JsonResponse({'token': jwt_token_str})
+        
+        return JsonResponse({'error': 'Invalid credentials'}, status=401)
+
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 # Course views
 @csrf_exempt
@@ -191,3 +305,36 @@ def create_announcement(request):
 @csrf_exempt
 def list_announcements(request):
     return HttpResponse('list_announcements')
+
+
+@csrf_exempt
+def register_student(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
+        name = data.get('name')
+        gender = data.get('gender')
+        date_of_birth = data.get('date_of_birth')
+        major = data.get('major')
+        email = data.get('email')
+        contact_number = data.get('contact_number')
+
+        # Create a new user account
+        user = User.objects.create_user(username=username, password=password)
+
+        # Create a new student record
+        student = Student(
+            user=user,
+            name=name,
+            gender=gender,
+            date_of_birth=date_of_birth,
+            major=major,
+            email=email,
+            contact_number=contact_number
+        )
+        student.save()
+
+        return JsonResponse({'message': 'Registration successful'})
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)

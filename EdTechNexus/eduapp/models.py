@@ -3,17 +3,17 @@ from django.contrib.auth.models import User
 
 # Represents a Student in the system
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Link to the User model for authentication
+    user = models.OneToOneField(User, on_delete=models.CASCADE,default=1)
     name = models.CharField(max_length=100)
-    student_id = models.CharField(max_length=4, unique=True)  # 4-digit unique student ID
+    student_id = models.CharField(max_length=4, unique=True,default=1)  # 4-digit unique student ID
     gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')])
     date_of_birth = models.DateField()
     major = models.CharField(max_length=50)
     email = models.EmailField()
-    contact_number = models.CharField(max_length=20)
+    contact_number = models.CharField(max_length=10)
 
     def __str__(self):
-        return self.name
+        return self.user.username
 
 # Represents an Instructor in the system
 class Instructor(models.Model):
