@@ -18,11 +18,13 @@ urlpatterns = [
 
     # Assignment URLs
     path('assignments/', views.list_assignments, name='list-assignments'),
+    path('assignments/<int:pk>/', views.update_delete_assignment, name='update_delete_assignment'),
     path('assignments/create/', views.create_assignment, name='create-assignment'),
 
     # Enrollment URLs
-    path('enrollments/', views.list_enrollments, name='list-enrollments'),
-    path('enrollments/create/', views.create_enrollment, name='create-enrollment'),
+    path('enroll/', views.enroll_student, name='enroll_student'),
+    path('approve/<int:enrollment_id>/', views.approve_enrollment, name='approve_enrollment'),
+    path('reject/<int:enrollment_id>/', views.reject_enrollment, name='reject_enrollment'),
 
     # Submission URLs
     path('submissions/', views.list_submissions, name='list-submissions'),

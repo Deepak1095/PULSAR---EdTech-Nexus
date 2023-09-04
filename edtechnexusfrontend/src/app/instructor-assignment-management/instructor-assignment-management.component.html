@@ -1,0 +1,119 @@
+<!-- instructor-assignment-management.component.html -->
+
+<!-- Create Assignment button -->
+<div class="container mx-auto p-4">
+  <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mx-2" (click)="toggleFormVisibility()">Create Assignment</button>
+</div>
+
+<!-- Create Assignment Form Modal -->
+<div *ngIf="isFormVisible"  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"> <!-- Add modal styling -->
+  <div class="w-full md:w-1/2 lg:w-1/3 border border-gray-300 rounded p-6 mx-auto my-6 shadow-md bg-white">
+    <h3 class="text-2xl font-semibold mb-4">Create Assignment</h3>
+    <form (submit)="createAssignment()" class="space-y-4">
+      <div class="space-y-2">
+        <label class="block">Title:</label>
+        <input [(ngModel)]="assignmentData.title" name="title" required class="w-full p-2 border rounded">
+      </div>
+      <div class="space-y-2">
+        <label class="block">Description:</label>
+        <textarea [(ngModel)]="assignmentData.description" name="description" required class="w-full p-2 border rounded"></textarea>
+      </div>
+      <div class="space-y-2">
+        <label class="block">Due Date:</label>
+        <input [(ngModel)]="assignmentData.due_date" name="due_date" type="date" required class="w-full p-2 border rounded">
+      </div>
+      <div class="space-y-2">
+        <label class="block">Course Code:</label>
+        <select [(ngModel)]="assignmentData.course_code" name="course_code" required class="w-full p-2 border rounded">
+          <option value="" disabled>Select Course Code</option>
+          <option *ngFor="let course of courseCodes" [value]="course">{{ course }}</option>
+        </select>
+      </div>
+      <!-- Rest of the form remains the same -->
+      <div class="flex justify-end space-x-4">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Create Assignment</button>
+        <button type="button" (click)="toggleFormVisibility()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Assignments List with Filter -->
+<div class="container">
+  <h2 class="text-lg font-semibold mt-6 mb-2 text-center">Assignments List</h2>
+  
+  <!-- Filter Input and Button -->
+  <div class="flex justify-center items-center mb-4">
+    <select class="border border-gray-300 px-2 py-1 rounded mr-2" [(ngModel)]="courseCodeFilter" (change)="applyFilter()">
+      <option value="">All Courses</option> <!-- Default option to show all assignments -->
+      <option *ngFor="let course of courseCodes" [value]="course">{{ course }}</option>
+    </select>
+  </div>
+  
+  <!-- Assignments Table with responsive width -->
+  <div class="overflow-x-auto">
+    <table class="border-collapse w-full sm:w-95 m-auto">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="border border-gray-300 px-3 py-2">Title</th>
+          <th class="border border-gray-300 px-3 py-2">Description</th>
+          <th class="border border-gray-300 px-3 py-2">Due Date</th>
+          <th class="border border-gray-300 px-3 py-2">Course Code</th>
+          <th class="border border-gray-300 px-3 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let assignment of filteredAssignments" class="border border-gray-300">
+          <td class="border border-gray-300 px-3 py-2">{{ assignment.title }}</td>
+          <td class="border border-gray-300 px-3 py-2">{{ assignment.description }}</td>
+          <td class="border border-gray-300 px-3 py-2">{{ assignment.due_date }}</td>
+          <td class="border border-gray-300 px-3 py-2">{{ assignment.course_code }}</td>
+          <td class="border border-gray-300 px-3 py-2">
+            <button class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded mr-2" (click)="toggleEditModal(assignment)">Edit</button>
+            <button class="bg-red-500 hover.bg-red-600 text-white px-2 py-1 rounded" (click)="showDeleteConfirmation(assignment)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+<!-- Edit Assignment Modal -->
+<div *ngIf="showEditModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="w-full md:w-1/2 lg:w-1/3 border border-gray-300 rounded p-6 mx-auto my-6 shadow-md bg-white">
+    <h3 class="text-2xl font-semibold mb-4">Edit Assignment</h3>
+    <form (submit)="updateAssignment()" class="space-y-4">
+      <div class="space-y-2">
+        <label class="block">Title:</label>
+        <input [(ngModel)]="editingAssignment!.title" name="title" required class="w-full p-2 border rounded">
+      </div>
+      <div class="space-y-2">
+        <label class="block">Description:</label>
+        <textarea [(ngModel)]="editingAssignment!.description" name="description" required class="w-full p-2 border rounded"></textarea>
+      </div>
+      <div class="space-y-2">
+        <label class="block">Due Date:</label>
+        <input [(ngModel)]="editingAssignment!.due_date" name="due_date" type="date" required class="w-full p-2 border rounded">
+      </div>
+      <!-- Rest of the form remains the same -->
+      <div class="flex justify-end space-x-4">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save</button>
+        <button type="button" (click)="cancelEdit()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div *ngIf="showDeleteConfirmModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+  <div class="bg-white p-6 rounded shadow-lg">
+    <h3 class="text-lg font-semibold mb-2">Confirm Delete</h3>
+    <p>Are you sure you want to delete this assignment?</p>
+    <div class="mt-4 flex justify-end">
+      <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded" (click)="deleteAssignment(editingAssignment!.id)">Delete</button>
+      <button class="ml-2" (click)="cancelDelete()">Cancel</button>
+    </div>
+  </div>
+</div>

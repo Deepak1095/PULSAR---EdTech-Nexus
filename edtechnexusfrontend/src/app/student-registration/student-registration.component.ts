@@ -8,51 +8,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./student-registration.component.css']
 })
 export class StudentRegistrationComponent {
-//   formData: any = {}; // Object to store form data
-//   generatedText: string = '';
-//   constructor(private httpClient: HttpClient) {} // Inject HttpClient
-
-//   onSubmit() {
-//     // Send a POST request to your Django backend API to register the student
-//     // Replace '/api/register_student/' with the actual API endpoint
-//     this.httpClient.post('/api/register_student/', this.formData).subscribe(
-//       (response) => {
-//         console.log(response);
-//         // Handle success here
-//       },
-//       (error) => {
-//         console.error(error);
-//         // Handle error here
-//       }
-//     );
-//   }
-//   sentences: string[] = [
-//     "Welcome to Our University. Explore our diverse programs.",
-//     "Our dedicated faculty ensures your success.",
-//     "Join our vibrant community of students.",
-//     "We are committed to your education.",
-//     "Discover endless opportunities with us."
-//   ];
-//   currentIndex: number = 0;
-
-//   ngOnInit() {
-//     // Automatically display sentences every 5 seconds (adjust the interval as needed)
-//     setInterval(() => {
-//       this.generateText();
-//     }, 2000); // 5000 milliseconds (5 seconds)
-//   }
-
-//   generateText() {
-//     if (this.currentIndex === this.sentences.length) {
-//       // Reset the index when it reaches the end of the sentence list
-//       this.currentIndex = 0;
-//     }
-
-//     const sentence = this.sentences[this.currentIndex];
-//     this.generatedText = sentence;
-//     this.currentIndex++;
-//   }
-// }
 
   formData = {
     email: '',

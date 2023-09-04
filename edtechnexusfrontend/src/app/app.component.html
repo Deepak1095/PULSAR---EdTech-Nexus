@@ -1,25 +1,66 @@
 <nav class="bg-blue-500 py-4 px-4">
   <div class="container mx-auto">
     <div class="flex items-center justify-between">
-      <a routerLink="/" class="text-white font-semibold text-lg hover:text-gray-300">
+      <a routerLink="/home" class="text-white font-semibold text-lg hover:text-gray-300">
         <img src="https://github.com/suraj826580/merciful-note-7666/assets/111503473/f26a522a-1a04-47a7-bf0a-3d61d0d2d735" alt="Sage Academy Logo" width="100" height="100">
       </a>
 
-      <ul class="flex space-x-6">
+      <!-- Responsive Navigation Menu -->
+      <div class="lg:hidden">
+        <!-- Hamburger Menu Icon -->
+        <button
+          (click)="toggleMobileMenu()"
+          class="text-white hover:text-gray-300 focus:outline-none focus:text-gray-300"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            ></path>
+          </svg>
+        </button>
+
+        <!-- Mobile Menu (hidden by default) -->
+        <div *ngIf="isMobileMenuOpen" class="bg-blue-500 text-white absolute top-16 right-0 w-40 mt-2 rounded-lg shadow-md space-y-2">
+          <ul>
+            <li><a routerLink="/instructor-course-management" (click)="closeMobileMenu()" class="block px-4 py-2 hover:bg-blue-100">Courses</a></li>
+            <li><a routerLink="/instructor-assignment-management" (click)="closeMobileMenu()" class="block px-4 py-2 hover:bg-blue-100">Assignment</a></li>
+            <li><a routerLink="/student-course-management" (click)="closeMobileMenu()" class="block px-4 py-2 hover:bg-blue-100">Student Courses</a></li>
+            <li><a routerLink="/instructors" (click)="closeMobileMenu()" class="block px-4 py-2 hover:bg-blue-100">Instructors</a></li>
+            <li><a routerLink="/student-register" (click)="closeMobileMenu()" class="block px-4 py-2 hover:bg-blue-100">Register</a></li>
+            <li><a routerLink="/student-login" (click)="closeMobileMenu()" class="block px-4 py-2 hover:bg-blue-100">Login</a></li>
+            <li><a routerLink="/settings" (click)="closeMobileMenu()" class="block px-4 py-2 hover:bg-blue-100">Settings</a></li>
+            <!-- Add more options as needed -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Menu (hidden on small screens) -->
+      <ul class="hidden lg:flex space-x-6">
         <li><a routerLink="/instructor-course-management" class="text-white hover:text-gray-300">Courses</a></li>
+        <li><a routerLink="/instructor-assignment-management" class="text-white hover:text-gray-300">Assignment</a></li>
+        <li><a routerLink="/student-course-management" class="text-white hover:text-gray-300">Student Courses</a></li>
         <li><a routerLink="/instructors" class="text-white hover:text-gray-300">Instructors</a></li>
         <li><a routerLink="/student-register" class="text-white hover:text-gray-300">Register</a></li>
       </ul>
 
       <!-- Profile icon with dropdown -->
-      <div class="relative" (click)="toggleProfileDropdown()">
+      <div class="relative hidden lg:block" (click)="toggleProfileDropdown()">
         <!-- Circular profile image/icon -->
         <div class="w-10 h-10 rounded-full overflow-hidden">
           <img src="https://github.com/suraj826580/merciful-note-7666/assets/111503473/92917399-48d6-43ed-9ac8-c78b65d46bbd" alt="Profile Image"> <!-- Replace with your profile picture URL -->
         </div>
         <!-- Dropdown menu -->
         <ul *ngIf="isProfileDropdownOpen" class="absolute right-0 mt-8 w-40 bg-white text-blue-500 rounded-lg shadow-md space-y-2">
-          <li><a routerLink="/home" class="block px-4 py-2 hover:bg-blue-100">Home</a></li>
+          <li><a routerLink="/student-login" class="block px-4 py-2 hover:bg-blue-100">Login</a></li>
           <li><a routerLink="/settings" class="block px-4 py-2 hover:bg-blue-100">Settings</a></li>
           <!-- Add more options as needed -->
         </ul>
@@ -27,4 +68,5 @@
     </div>
   </div>
 </nav>
+
 <router-outlet></router-outlet>

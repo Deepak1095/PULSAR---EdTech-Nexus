@@ -50,8 +50,14 @@ class Assignment(models.Model):
 
 # Represents the enrollment of a student in a course
 class Enrollment(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    )
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
 
 # Represents a submission made by a student for an assignment
 class Submission(models.Model):

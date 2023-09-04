@@ -8,11 +8,24 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'edtechnexusfrontend';
   
-// In your Angular component
-isProfileDropdownOpen = false;
+   // Variable to toggle the mobile menu
+   isMobileMenuOpen: boolean = false;
 
-toggleProfileDropdown() {
-  this.isProfileDropdownOpen = !this.isProfileDropdownOpen;
-}
-
+   // Variable to toggle the profile dropdown
+   isProfileDropdownOpen: boolean = false;
+ 
+   // Function to toggle the mobile menu
+   toggleMobileMenu() {
+     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+   }
+ 
+   // Function to close the mobile menu
+   closeMobileMenu() {
+     this.isMobileMenuOpen = false;
+   }
+ 
+   // Function to toggle the profile dropdown
+   toggleProfileDropdown() {
+     this.isProfileDropdownOpen = !this.isProfileDropdownOpen;
+   }
 }

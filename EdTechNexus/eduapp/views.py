@@ -2,7 +2,7 @@ from django.http import JsonResponse,HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Instructor,Course,Student
+from .models import Instructor,Course,Student,Enrollment,Assignment,Submission
 import json
 from django.contrib.auth import login, authenticate
 import jwt  # Import JWT library
@@ -140,6 +140,7 @@ def list_students(request):
     for student in students:
         print(student.user.password)
         student_data.append({
+            'student_id':student.student_id,
             'name': student.name,
             'gender': student.gender,
             'date_of_birth': student.date_of_birth,
@@ -149,7 +150,6 @@ def list_students(request):
 
     return JsonResponse({'students_data': student_data})
 
-# myapp/views.py
 @csrf_exempt
 def custom_login(request):
     if request.method == 'POST':
@@ -170,20 +170,29 @@ def custom_login(request):
             # Authenticate the user with the provided email and password
             user = authenticate(request, username=user.username, password=password)
             if user is not None:
-                # If authentication is successful, generate a JWT token
-                payload = {
-                    'user_id': user.id,
-                    'username': user.username,
-                }
-                jwt_token = jwt.encode(payload, 'your-secret-key', algorithm='HS256')  # Replace 'your-secret-key'
+                # If authentication is successful, get the student_id from the related Student model
+                try:
+                    student = Student.objects.get(user=user)  # Replace 'user' with the actual related field name
+                    student_id = student.student_id  # Replace 'student_id' with the actual field name
+                except Student.DoesNotExist:
+                    student_id = None
+                
+                if student_id is not None:
+                    # Generate a JWT token with student_id
+                    payload = {
+                        'user_id': user.id,
+                        'username': user.username,
+                        'student_id': student_id  # Add student_id to the payload
+                    }
+                    jwt_token = jwt.encode(payload, 'your-secret-key', algorithm='HS256')  # Replace 'your-secret-key'
 
-                # Log in the user
-                login(request, user)
+                    # Log in the user
+                    login(request, user)
 
-                # Convert the bytes JWT token to a string
-                jwt_token_str = jwt_token.decode('utf-8')
+                    # Convert the bytes JWT token to a string
+                    jwt_token_str = jwt_token.decode('utf-8')
 
-                return JsonResponse({'token': jwt_token_str})
+                    return JsonResponse({'token': jwt_token_str})
         
         return JsonResponse({'error': 'Invalid credentials'}, status=401)
 
@@ -262,18 +271,85 @@ def course_detail(request, pk):
 
 
 # Assignment views
+# views.py
 @csrf_exempt
 def create_assignment(request):
-    return HttpResponse('create_assignment')
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        try:
+            course = Course.objects.get(course_code=data['course_code'])  # Get the course object using course_code
+            assignment = Assignment(
+                title=data['title'],
+                description=data['description'],
+                due_date=data['due_date'],
+                course=course  # Assign the course object
+            )
+            assignment.save()
+            return JsonResponse({'message': 'Assignment created successfully'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def create_submission(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        try:
+            course = Course.objects.get(course_code=data['course_code'])  # Get the course object using course_code
+            submission = Submission(
+                assignment_id=data['assignment_id'],
+                student_id=data['student_id'],
+                submission_date=data['submission_date'],
+                status=data['status'],
+                remarks=data['remarks']
+            )
+            submission.save()
+            return JsonResponse({'message': 'Submission created successfully'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @csrf_exempt
 def list_assignments(request):
-    return HttpResponse('list_assignments')
+    if request.method == 'GET':
+        assignments = Assignment.objects.all()
+        
+        assignment_list = []
+        for assignment in assignments:
+            data = {
+                'id': assignment.id,
+                'title': assignment.title,
+                'description': assignment.description,
+                'due_date': assignment.due_date,
+                'course_code': assignment.course.course_code,  # Access the related course's code
+            }
+            assignment_list.append(data)
+        return JsonResponse(assignment_list, safe=False)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# Enrollment views
 @csrf_exempt
-def create_enrollment(request):
-    return HttpResponse('create_enrollment')
+def update_delete_assignment(request, pk):
+    
+    if request.method == 'PUT':
+            assignment = Assignment.objects.get(pk=pk)
+            data = json.loads(request.body)
+            assignment.title = data['title']
+            assignment.description = data['description']
+            assignment.due_date = data['due_date']
+            assignment.course_code = data['course_code']
+            assignment.save()
+            return JsonResponse({'message': 'Assignment updated successfully'})
+
+    elif request.method == 'DELETE':
+            assignment = Assignment.objects.get(pk=pk)
+            assignment.delete()
+            return JsonResponse({'message': 'Assignment deleted successfully'})
+    
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @csrf_exempt
 def list_enrollments(request):
@@ -282,7 +358,23 @@ def list_enrollments(request):
 # Submission views
 @csrf_exempt
 def create_submission(request):
-    return HttpResponse('create_submission')
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        try:
+            course = Course.objects.get(course_code=data['course_code'])  # Get the course object using course_code
+            submission = Submission(
+                assignment_id=data['assignment_id'],
+                student_id=data['student_id'],
+                submission_date=data['submission_date'],
+                status=data['status'],
+                remarks=data['remarks']
+            )
+            submission.save()
+            return JsonResponse({'message': 'Submission created successfully'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @csrf_exempt
 def list_submissions(request):
@@ -338,3 +430,55 @@ def register_student(request):
         return JsonResponse({'message': 'Registration successful'})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+# Enrollment views
+@csrf_exempt
+def enroll_student(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))  # Parse JSON data from the request body
+            student_id = data.get('student_id')
+            course_code = data.get('course_code')
+            print(f"Received student_id: {student_id}, course_code: {course_code}")
+
+            # Check if the student exists
+            try:
+                student = Student.objects.get(student_id=student_id)
+            except Student.DoesNotExist:
+                return JsonResponse({'error': 'Student not found'}, status=404)
+
+            # Check if the course exists
+            try:
+                course = Course.objects.get(course_code=course_code)
+            except Course.DoesNotExist:
+                return JsonResponse({'error': 'Course not found'}, status=404)
+
+            # Create an enrollment record using the student and course objects
+            enrollment = Enrollment.objects.create(student=student, course=course)
+            
+            return JsonResponse({'message': 'Enrollment request submitted successfully'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@csrf_exempt
+def approve_enrollment(request, enrollment_id):
+    try:
+        enrollment = Enrollment.objects.get(pk=enrollment_id)
+        enrollment.status = 'approved'
+        enrollment.save()
+        return JsonResponse({'message': 'Enrollment approved'})
+    except Enrollment.DoesNotExist:
+        return JsonResponse({'error': 'Enrollment not found'}, status=404)
+@csrf_exempt
+def reject_enrollment(request, enrollment_id):
+    try:
+        enrollment = Enrollment.objects.get(pk=enrollment_id)
+        enrollment.status = 'rejected'
+        enrollment.save()
+        return JsonResponse({'message': 'Enrollment rejected'})
+    except Enrollment.DoesNotExist:
+        return JsonResponse({'error': 'Enrollment not found'}, status=404)
