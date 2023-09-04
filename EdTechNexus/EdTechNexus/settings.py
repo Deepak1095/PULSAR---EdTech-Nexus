@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -78,6 +79,18 @@ TEMPLATES = [
         },
     },
 ]
+
+# Configure channel layers (using Redis as the backend)
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            # Adjust these settings according to your Redis server configuration
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+ASGI_APPLICATION = 'enrollment_project.routing.application'
 
 WSGI_APPLICATION = 'EdTechNexus.wsgi.application'
 

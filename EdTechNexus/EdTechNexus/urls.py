@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from eduapp import routing 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('eduapp.urls'))
+    path('',include('eduapp.urls')),
+    path('', include(routing.websocket_urlpatterns)),
 ]
