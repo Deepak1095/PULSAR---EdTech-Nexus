@@ -1,69 +1,88 @@
-<!-- student-registration.component.html -->
+<div class="min-h-screen flex items-center justify-center bg-gray-100"> 
+  <div class="max-w-xl w-full md:w-2/3 lg:w-3/4 p-4 md:p-6 border border-gray-300 rounded-lg">
 
-<div class="container mx-auto p-4">
-  <div class="max-w-md mx-auto">
-    <h2 class="text-2xl font-semibold mb-4">Registration</h2>
+    <div class="text-center">
+      <h2 class="mt-1 text-3xl font-extrabold text-gray-900">Registration</h2>
+    </div>
 
-    <!-- Show registration form if registration is not successful -->
-    <form *ngIf="!isRegistrationSuccessful" (ngSubmit)="saveStudentDetails()" class="space-y-4">
+    <form (ngSubmit)="saveStudentDetails()" class="space-y-4">
 
-      <div class="mb-4">
-        <label for="password" class="block text-sm font-medium text-gray-700">Password:</label>
-        <input type="password" id="password" name="password" [(ngModel)]="formData.password" required
-          class="p-2 rounded-md w-full border focus:outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-      <div class="mb-4">
-        <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
-        <input type="email" id="email" name="email" [(ngModel)]="formData.email" required
-          class="p-2 rounded-md w-full border focus:outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
+        <!-- Name Input -->
+        <div>
+          <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
+          <input id="name" name="name" [(ngModel)]="formData.name" type="text" required
+            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+            placeholder="Enter your name">
+        </div>
 
-      <div class="mb-4">
-        <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
-        <input type="text" id="name" name="name" [(ngModel)]="formData.name" required
-          class="p-2 rounded-md w-full border focus:outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
+        <!-- Date of Birth Input -->
+        <div>
+          <label for="date_of_birth" class="block text-gray-700 font-medium mb-2">Date of Birth</label>
+          <input type="date" id="date_of_birth" name="date_of_birth" [(ngModel)]="formData.date_of_birth" required
+            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
+        </div>
 
-      <!-- Add other student details fields here -->
-      <!-- Example: -->
-      <div class="mb-4">
-        <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Date of Birth:</label>
-        <input type="date" id="date_of_birth" name="date_of_birth" [(ngModel)]="formData.date_of_birth" required
-          class="p-2 rounded-md w-full border focus:outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
+        <!-- Major Input -->
+        <div>
+          <label for="major" class="block text-gray-700 font-medium mb-2">Major</label>
+          <input type="text" id="major" name="major" [(ngModel)]="formData.major" required
+            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+            placeholder="Enter your major">
+        </div>
 
-      <div class="mb-4">
-        <label for="major" class="block text-sm font-medium text-gray-700">Major:</label>
-        <input type="text" id="major" name="major" [(ngModel)]="formData.major" required
-          class="p-2 rounded-md w-full border focus:outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
+        <!-- Contact Number Input -->
+        <div>
+          <label for="contact_number" class="block text-gray-700 font-medium mb-2">Contact Number</label>
+          <input type="text" id="contact_number" name="contact_number" [(ngModel)]="formData.contact_number" required
+            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+            placeholder="Enter your contact number">
+        </div>
 
-      <div class="mb-4">
-        <label for="contact_number" class="block text-sm font-medium text-gray-700">Contact Number:</label>
-        <input type="text" id="contact_number" name="contact_number" [(ngModel)]="formData.contact_number" required
-          class="p-2 rounded-md w-full border focus:outline-none focus:ring-2 focus:ring-blue-500">
+        
+        <!-- Email Input -->
+        <div>
+          <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+          <input id="email" name="email" [(ngModel)]="formData.email" type="email" required
+            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+            placeholder="Enter your email">
+        </div>
+
+
+        <!-- Password Input -->
+        <div>
+          <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
+          <input type="password" id="password" name="password" [(ngModel)]="formData.password" required
+            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+            placeholder="Enter your password">
+        </div>
+
       </div>
 
       <!-- Display registration error -->
       <div *ngIf="registrationError" class="text-red-500 text-sm">{{ registrationError }}</div>
 
+      <!-- Save Button -->
       <div class="text-center">
-        <button
-          type="submit"
-          class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-full w-full"
-        >
-          Save Student Details
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-full w-1/2">
+          Register
         </button>
       </div>
     </form>
 
     <!-- Show a message when registration is successful -->
-    <div *ngIf="isRegistrationSuccessful" class="text-center">
+    <div *ngIf="isRegistrationSuccessful" class="text-center mt-4">
       <p class="text-green-500 text-lg">Registration successful!</p>
-      <p class="mt-4">
+      <p class="mt-2">
         You can now <a routerLink="/student-login" class="text-blue-500 underline">log in</a>.
       </p>
     </div>
+
+    <!-- Go to Login Link (For Already Registered Users) -->
+    <div class="text-center mt-4">
+      <a routerLink="/student-login" class="text-blue-500 underline">Already registered? Go to Login</a>
+    </div>
+
   </div>
 </div>

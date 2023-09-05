@@ -1,4 +1,4 @@
-<nav class="bg-blue-500 py-4 px-4">
+<nav class="bg-blue-500">
   <div class="container mx-auto">
     <div class="flex items-center justify-between">
       <a routerLink="/home" class="text-white font-semibold text-lg hover:text-gray-300">
@@ -47,6 +47,7 @@
       <ul class="hidden lg:flex space-x-6">
         <li><a routerLink="/instructor-course-management" class="text-white hover:text-gray-300">Courses</a></li>
         <li><a routerLink="/instructor-assignment-management" class="text-white hover:text-gray-300">Assignment</a></li>
+        <li><a routerLink="/student-assignment-management" class="text-white hover:text-gray-300">Student Assignment</a></li>
         <li><a routerLink="/student-course-management" class="text-white hover:text-gray-300">Student Courses</a></li>
         <li><a routerLink="/instructors" class="text-white hover:text-gray-300">Instructors</a></li>
         <li><a routerLink="/student-register" class="text-white hover:text-gray-300">Register</a></li>
@@ -69,4 +70,4 @@
   </div>
 </nav>
 
-<router-outlet></router-outlet>
+  <router-outlet></router-outlet> <!-- This is where your routed components will be displayed -->

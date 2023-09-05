@@ -8,6 +8,7 @@ import { StudentLoginComponent } from './student-login/student-login.component';
 import { HomeComponent } from './home/home.component';
 import { StudentCourseComponent } from './student-course/student-course.component';
 import { InstructorAssignmentManagementComponent } from './instructor-assignment-management/instructor-assignment-management.component';
+import { StudentAssignmentsComponent } from './student-assignments/student-assignments.component';
 const routes: Routes = [
   { path: 'instructor-course-management', component: InstructorCourseManagementComponent },
   { path: 'instructors', component: InstructorManagementComponent },
@@ -16,7 +17,8 @@ const routes: Routes = [
   { path: 'student-login', component: StudentLoginComponent },
   { path: 'student-course-management', component: StudentCourseComponent },
   {path:'home',component:HomeComponent},
-  {path:'instructor-assignment-management',component:InstructorAssignmentManagementComponent}
+  {path:'instructor-assignment-management',component:InstructorAssignmentManagementComponent},
+  {path:'student-assignment-management',component:StudentAssignmentsComponent}
 ];
 
 @NgModule({

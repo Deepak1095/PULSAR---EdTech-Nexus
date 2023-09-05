@@ -25,9 +25,6 @@ export class InstructorAssignmentManagementComponent implements OnInit {
     this.fetchAssignments();
   }
   
-
-
-
   toggleFormVisibility() {
     this.isFormVisible = !this.isFormVisible;
   }
