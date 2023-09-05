@@ -61,11 +61,15 @@ class Enrollment(models.Model):
 
 # Represents a submission made by a student for an assignment
 class Submission(models.Model):
-    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    assignment = models.ForeignKey('Assignment', on_delete=models.CASCADE)
+    student = models.ForeignKey('Student', on_delete=models.CASCADE)
     submission_date = models.DateField()
     status = models.CharField(max_length=10, choices=[('Submitted', 'Submitted'), ('Late', 'Late'), ('Graded', 'Graded')])
     remarks = models.TextField()
+    submission_file = models.FileField(upload_to='submission_files/', blank=True, null=True)
+    submission_url = models.URLField(max_length=200, blank=True, null=True)
+    submission_text = models.TextField(blank=True, null=True)
+
 
 # Represents a Department within the institution
 class Department(models.Model):

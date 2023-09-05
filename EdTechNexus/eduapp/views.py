@@ -356,25 +356,59 @@ def list_enrollments(request):
     return HttpResponse('list_enrollments')
 
 # Submission views
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 @csrf_exempt
-def create_submission(request):
+def assignment_submission(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        try:
-            course = Course.objects.get(course_code=data['course_code'])  # Get the course object using course_code
-            submission = Submission(
-                assignment_id=data['assignment_id'],
-                student_id=data['student_id'],
-                submission_date=data['submission_date'],
-                status=data['status'],
-                remarks=data['remarks']
+        data = json.loads(request.body.decode('utf-8'))
+        
+        assignment_id = data.get('assignment_id')
+        student_id = data.get('student_id')
+        submission_date = data.get('submission_date')
+        status = data.get('status')
+        remarks = data.get('remarks')
+
+        submission_file = data.get('submission_file')
+        submission_url = data.get('submission_url')
+        submission_text = data.get('submission_text')
+
+        if submission_file:
+            submission = Submission.objects.create(
+                assignment_id=assignment_id,
+                student_id=student_id,
+                submission_date=submission_date,
+                status=status,
+                remarks=remarks,
+                submission_file=submission_file,
             )
-            submission.save()
-            return JsonResponse({'message': 'Submission created successfully'})
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
+        elif submission_url:
+            submission = Submission.objects.create(
+                assignment_id=assignment_id,
+                student_id=student_id,
+                submission_date=submission_date,
+                status=status,
+                remarks=remarks,
+                submission_url=submission_url,
+            )
+        elif submission_text:
+            submission = Submission.objects.create(
+                assignment_id=assignment_id,
+                student_id=student_id,
+                submission_date=submission_date,
+                status=status,
+                remarks=remarks,
+                submission_text=submission_text,
+            )
+        else:
+            return JsonResponse({'error': 'No submission data provided.'}, status=400)
+
+        return JsonResponse({'message': 'Assignment submitted successfully.'})
+
+    return JsonResponse({'error': 'Unsupported HTTP method.'}, status=405)
+
 
 @csrf_exempt
 def list_submissions(request):
