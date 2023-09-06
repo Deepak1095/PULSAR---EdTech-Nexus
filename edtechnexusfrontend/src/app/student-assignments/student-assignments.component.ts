@@ -106,7 +106,7 @@ export class StudentAssignmentsComponent implements OnInit {
       (assignmentDetails: Assignment) => {
         // Navigate to the submission page with the assignment ID, student info, and assignment details as parameters
         this.router.navigate(['/submission', id], {
-          state: { studentInfo: decodedToken.studentInfo, assignmentDetails } // Include studentInfo and assignmentDetails in the state
+          state: { studentInfo: decodedToken, assignmentDetails:assignmentDetails } // Include studentInfo and assignmentDetails in the state
         });
       },
       (error) => {

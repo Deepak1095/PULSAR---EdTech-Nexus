@@ -11,7 +11,7 @@ export class AssignmentSubmissionComponent implements OnInit {
   assignmentId: number = 0;
   assignmentDetails: any; // Assignment-specific data
   studentInfo: any; // Student information
-
+  isSubmitted: boolean = false; 
   submissionDate: string = '';
   submissionChoice: string = ''; // No pre-defined choice
   submissionUrl: string = '';
@@ -21,27 +21,35 @@ export class AssignmentSubmissionComponent implements OnInit {
   constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
-    // Retrieve the assignmentId from the route parameter
-    this.route.params.subscribe(params => {
-      this.assignmentId = +params['id']; // Assuming 'id' is the parameter name and converting it to a number
-    });
-
     // Retrieve student information and assignment details using ActivatedRoute
-    this.route.data.subscribe(data => {
-      this.studentInfo = data['studentInfo'];
-      this.assignmentDetails = data['assignmentDetails'];
-
-      // Initialize the submission form with the retrieved data
-      this.initializeForm();
+   
+    this.route.paramMap.subscribe(params => {
+      this.assignmentId = Number(params.get('id')); // Get the 'id' parameter from the route
+      const state = window.history.state; // Retrieve the state data
+  
+      if (state) {
+        this.studentInfo = state.studentInfo;
+        this.assignmentDetails = state.assignmentDetails;
+  
+        // Now you have access to the state data
+        console.log('Student Info:', this.studentInfo);
+        console.log('Assignment Details:', this.assignmentDetails);
+      }
     });
+    this.initializeForm()
   }
 
   initializeForm() {
     if (this.assignmentDetails) {
       // Populate the submission form fields with assignment data and student information
-      this.submissionDate = new Date().toISOString(); // Set the current date and time
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Add leading zero if needed
+      const day = String(currentDate.getDate()).padStart(2, '0'); // Add leading zero if needed
+      this.submissionDate = `${year}-${month}-${day}`; // Format the date as YYYY-MM-DD
     }
   }
+  
 
   onFileChange(event: any) {
     const fileList: FileList = event.target.files;
@@ -59,22 +67,23 @@ export class AssignmentSubmissionComponent implements OnInit {
       submission_url: this.submissionUrl,
       submission_text: this.submissionText,
       student_info: this.studentInfo,
-      submission_file: this.submissionFile, // Include the file if it's selected
+      submission_file: this.submissionFile,
+       // Include the file if it's selected
     };
+    console.log(submissionData)
   
     // Make an HTTP POST request to your backend API URL with the submissionData object
-    const apiUrl = 'http://127.0.0.1:8000/submit_assignment/' + this.assignmentId + '/';
-    console.log(submissionData)
-    // this.http.post(apiUrl, submissionData).subscribe(
-    //   (response) => {
-    //     console.log('Submission successful:', response);
-    //     // You can handle the response from the backend here
-    //   },
-    //   (error) => {
-    //     console.error('Submission failed:', error);
-    //     // You can handle any errors that occur during the submission here
-    //   }
-    // );
+    this.http.post(`http://127.0.0.1:8000/submitAssignment/${this.assignmentId}/`, submissionData).subscribe(
+      (response) => {
+        console.log('Submission successful:', response);
+        this.isSubmitted = true;
+        // You can handle the response from the backend here
+      },
+      (error) => {
+        console.error('Submission failed:', error);
+        // You can handle any errors that occur during the submission here
+      }
+    );
   }
   
 }

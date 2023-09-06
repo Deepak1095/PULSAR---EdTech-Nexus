@@ -16,7 +16,7 @@ export class InstructorCourseManagementComponent implements OnInit {
   showUpdateCourseForm: boolean = false;
   showDeleteConfirmModal: boolean = false;
 
-  constructor(private http: HttpClient, private socket: Socket) {} // Inject Socket
+  constructor(private http: HttpClient) {} // Inject Socket
 
   toggleCreateCourseForm(): void {
     this.showCreateCourseForm = !this.showCreateCourseForm;
@@ -24,7 +24,7 @@ export class InstructorCourseManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchCourses();
-    this.setupWebSocket(); // Initialize WebSocket connection
+    // this.setupWebSocket(); // Initialize WebSocket connection
   }
 
   fetchCourses(): void {
@@ -97,22 +97,22 @@ export class InstructorCourseManagementComponent implements OnInit {
   }
 
   // Initialize WebSocket connection
-  setupWebSocket(): void {
-    // Connect to your WebSocket server URL
-    this.socket.connect(); // without any arguments
+  // setupWebSocket(): void {
+  //   // Connect to your WebSocket server URL
+  //   this.socket.connect(); // without any arguments
 
 
-    // Subscribe to WebSocket events
-    this.socket.on('enrollment_approved', (data: any) => {
-      console.log('Enrollment approved:', data);
-      // Handle enrollment approval, e.g., update the UI to indicate approval
-    });
+  //   // Subscribe to WebSocket events
+  //   this.socket.on('enrollment_approved', (data: any) => {
+  //     console.log('Enrollment approved:', data);
+  //     // Handle enrollment approval, e.g., update the UI to indicate approval
+  //   });
 
-    this.socket.on('enrollment_rejected', (data: any) => {
-      console.log('Enrollment rejected:', data);
-      // Handle enrollment rejection, e.g., update the UI to indicate rejection
-    });
-  }
+  //   this.socket.on('enrollment_rejected', (data: any) => {
+  //     console.log('Enrollment rejected:', data);
+  //     // Handle enrollment rejection, e.g., update the UI to indicate rejection
+  //   });
+  // }
 
   viewEnrollments(course: Course): void {
     // Send a request to your backend to fetch enrollments for the selected course

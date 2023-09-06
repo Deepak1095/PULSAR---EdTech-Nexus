@@ -14,7 +14,7 @@ import { AssignmentSubmissionComponent } from './assignment-submission/assignmen
 const routes: Routes = [
   { path: 'instructor-course-management', component: InstructorCourseManagementComponent },
   { path: 'instructors', component: InstructorManagementComponent },
-  {path:'student-register',component:StudentRegistrationComponent},
+  {path:'student-register',component:StudentRegistrationComponent, pathMatch: 'full'},
   {path:'instructor-login',component:InstructorLoginComponent},
   { path: 'student-login', component: StudentLoginComponent },
   { path: 'student-course-management', component: StudentCourseComponent },
