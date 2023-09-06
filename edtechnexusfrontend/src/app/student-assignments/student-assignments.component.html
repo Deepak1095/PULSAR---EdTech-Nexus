@@ -1,29 +1,29 @@
 <!-- StudentAssignmentsComponent HTML -->
 <div class="w-7/8 sm:w-3/4 mx-auto border-4 p-4 mt-2">
-    <h2 class="text-lg font-semibold mt-1 mb-2 text-center">Assignments</h2>
-  
-    <!-- Filter input: select dropdown on the right side -->
-    <div class="flex justify-end mb-4">
-      <select [(ngModel)]="courseCodeFilter" (change)="applyFilter()"class="border border-gray-300 px-2 py-1 rounded mr-2">
-        <option value="">All Courses</option> <!-- Default option to show all assignments -->
-        <option *ngFor="let courseCode of courseCodes" [value]="courseCode">{{ courseCode }}</option>
-      </select>
-    </div>
-  
-    <ul>
-      <li *ngFor="let assignment of filteredAssignments" class="mb-2 border-4 p-1" (click)="goToSubmissionPage(assignment.id)">
-        <div class="flex justify-between items-center p-4">
-          <!-- Left section: Assignment title and course code -->
-          <div>
-            <p class="text-lg font-semibold">{{ assignment.title }} - {{ assignment.course_code }}</p>
-            <p class="text-sm">Due Date: {{ assignment.due_date }}</p>
-          </div>
-          <!-- Right section: Pending status -->
-          <div class="text-right">
-            <p class="text-sm font-semibold text-green-600">Pending</p>
-          </div>
-        </div>
-      </li>
-    </ul>
+  <h2 class="text-lg font-semibold mt-1 mb-2 text-center">Assignments</h2>
+
+  <!-- Filter input: select dropdown on the right side -->
+  <div class="flex justify-end mb-4">
+    <select [(ngModel)]="courseCodeFilter" (change)="applyFilter()" class="border border-gray-300 px-2 py-1 rounded mr-2">
+      <option value="">All Courses</option> <!-- Default option to show all assignments -->
+      <option *ngFor="let courseCode of courseCodes" [value]="courseCode">{{ courseCode }}</option>
+    </select>
   </div>
+
+  <ul>
+    <li *ngFor="let assignment of filteredAssignments" class="mb-2 border-4 p-1 cursor-pointer" (click)="goToSubmissionPage(assignment.id)">
+      <div class="flex justify-between items-center p-4">
+        <!-- Left section: Assignment title and course code -->
+        <div>
+          <p class="text-lg font-semibold">{{ assignment.title }} - {{ assignment.course_code }}</p>
+          <p class="text-sm">Due Date: {{ assignment.due_date }}</p>
+        </div>
+        <!-- Right section: Pending status -->
+        <div class="text-right">
+          <p class="text-sm font-semibold text-green-600">Pending</p>
+        </div>
+      </div>
+    </li>
+  </ul>
   
+</div>
