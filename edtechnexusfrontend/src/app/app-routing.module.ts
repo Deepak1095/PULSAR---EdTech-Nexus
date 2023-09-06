@@ -10,18 +10,19 @@ import { StudentCourseComponent } from './student-course/student-course.componen
 import { InstructorAssignmentManagementComponent } from './instructor-assignment-management/instructor-assignment-management.component';
 import { StudentAssignmentsComponent } from './student-assignments/student-assignments.component';
 import { AssignmentSubmissionComponent } from './assignment-submission/assignment-submission.component';
+import { TokenAuthGuard } from './guards/token-auth.guard';
 
 const routes: Routes = [
-  { path: 'instructor-course-management', component: InstructorCourseManagementComponent },
-  { path: 'instructors', component: InstructorManagementComponent },
-  {path:'student-register',component:StudentRegistrationComponent, pathMatch: 'full'},
+  { path: 'instructor-course-management', component: InstructorCourseManagementComponent, canActivate: [TokenAuthGuard]   },
+  { path: 'instructors', component: InstructorManagementComponent, canActivate: [TokenAuthGuard]   },
+  { path: 'student-course-management', component: StudentCourseComponent, canActivate: [TokenAuthGuard] },
+  {path:'instructor-assignment-management',component:InstructorAssignmentManagementComponent, canActivate: [TokenAuthGuard]  },
+  {path:'student-assignment-management',component:StudentAssignmentsComponent, canActivate: [TokenAuthGuard] },
+  { path: 'submission/:id', component: AssignmentSubmissionComponent, canActivate: [TokenAuthGuard]   },
+  {path:'',component:HomeComponent, pathMatch: 'full'},
+  {path:'student-register',component:StudentRegistrationComponent },
   {path:'instructor-login',component:InstructorLoginComponent},
   { path: 'student-login', component: StudentLoginComponent },
-  { path: 'student-course-management', component: StudentCourseComponent },
-  {path:'home',component:HomeComponent},
-  {path:'instructor-assignment-management',component:InstructorAssignmentManagementComponent},
-  {path:'student-assignment-management',component:StudentAssignmentsComponent},
-  { path: 'submission/:id', component: AssignmentSubmissionComponent }
 ];
 
 @NgModule({

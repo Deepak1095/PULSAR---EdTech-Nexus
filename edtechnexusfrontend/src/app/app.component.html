@@ -1,7 +1,8 @@
-<nav class="bg-blue-500">
+<div class="flex flex-col min-h-screen">
+  <nav class="bg-blue-500 h-14 flex items-center justify-between fixed w-full z-20 top-0 left-0">
   <div class="container mx-auto">
     <div class="flex items-center justify-between">
-      <a routerLink="/home" class="text-white font-semibold text-lg hover:text-gray-300">
+      <a routerLink="/" class="text-white font-semibold text-lg hover:text-gray-300">
         <img src="https://github.com/suraj826580/merciful-note-7666/assets/111503473/f26a522a-1a04-47a7-bf0a-3d61d0d2d735" alt="Sage Academy Logo" width="100" height="100">
       </a>
 
@@ -70,4 +71,82 @@
   </div>
 </nav>
 
-  <router-outlet></router-outlet> <!-- This is where your routed components will be displayed -->
+<div class="min-h-[calc(110vh-3.5rem)] pt-14">
+  <!-- Adjust the value in min-h- to account for the header height (e.g., 3.5rem) -->
+  <router-outlet></router-outlet>
+</div>
+  <footer class="bg-white dark:bg-blue-500 mt-auto">
+    <div class="mx-auto w-full max-w-screen-xl">
+      <div class="grid grid-cols-2 gap-8 px-4 py-6 lg:py-8 md:grid-cols-4">
+        <div>
+            <h2 class="mb-6 text-lg font-semibold text-gray-900 uppercase dark:text-white">Company</h2>
+            <ul class="text-white  font-medium">
+                <li class="mb-4">
+                    <a href="#" class=" hover:underline">About</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">Careers</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">Brand Center</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">Blog</a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="mb-6 text-lg font-semibold text-gray-900 uppercase dark:text-white">Help center</h2>
+            <ul class="text-white font-medium">
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">Discord Server</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">Twitter</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">Facebook</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">Contact Us</a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="mb-6 text-lg font-semibold text-gray-900 uppercase dark:text-white">Legal</h2>
+            <ul class="text-white font-medium">
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">Privacy Policy</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">Licensing</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">Terms &amp; Conditions</a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="mb-6 text-lg font-semibold text-gray-900 uppercase dark:text-white">Download</h2>
+            <ul class="text-white font-medium">
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">iOS</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">Android</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">Windows</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#" class="hover:underline">MacOS</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    </div>
+</footer>
+</div>
+
+
+
