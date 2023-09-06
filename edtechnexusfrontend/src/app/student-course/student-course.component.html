@@ -1,19 +1,26 @@
-<!-- student-course.component.html -->
-
 <div class="mb-6">
-    <h2 class="text-lg font-semibold mb-2">Available Courses</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div *ngFor="let course of courses" class="mb-4 p-4 md:p-6 border rounded bg-white shadow-md">
-        <h3 class="text-lg font-semibold">{{ course.course_name }}</h3>
-        <p class="my-2"><strong>Course Code:</strong> {{ course.course_code }}</p>
-        <p class="my-2"><strong>Department:</strong> {{ course.department }}</p>
-        <p class="my-2"><strong>Credits:</strong> {{ course.credits }}</p>
-        <p class="my-2"><strong>Description:</strong> {{ course.description }}</p>
-        <div class="flex space-x-2 mt-4">
-          <button class="text-green-600 hover:text-green-900 border border-green-600 hover:border-green-900 px-2 py-1 rounded transition duration-300 hover:bg-green-100" (click)="enroll(course)">Enroll</button>
-          <!-- Add any other buttons or actions as needed -->
-        </div>
+  <h2 class="text-lg font-semibold mb-2">Available Courses</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div *ngFor="let course of courses" class="mb-4 p-4 md:p-6 border rounded bg-white shadow-md">
+      <h3 class="text-lg font-semibold">{{ course.course_name }}</h3>
+      <p class="my-2"><strong>Course Code:</strong> {{ course.course_code }}</p>
+      <p class="my-2"><strong>Department:</strong> {{ course.department }}</p>
+      <p class="my-2"><strong>Credits:</strong> {{ course.credits }}</p>
+      <p class="my-2"><strong>Description:</strong> {{ course.description }}</p>
+      <div class="flex space-x-2 mt-4">
+        <button
+        [disabled]="isCourseEnrolled(course)"
+        [class.border]="!isCourseEnrolled(course)"
+        [class.border-green-600]="!isCourseEnrolled(course)"
+        [class.border-green-900]="isCourseEnrolled(course)"
+        [class.border-green-900]="isCourseEnrolled(course)"
+        class="text-green-600 hover:text-green-900 px-2 py-1 rounded transition duration-300"
+        (click)="enroll(course)"
+      >
+        {{ isCourseEnrolled(course) ? 'Enrolled' : 'Enroll' }}
+      </button>
+        <!-- Add any other buttons or actions as needed -->
       </div>
     </div>
   </div>
-  
+</div>

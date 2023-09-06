@@ -5,5 +5,6 @@ export class Course {
     department: string='';
     credits: number =0;
     description: string='';
+    enrolled:boolean=false
   }
   

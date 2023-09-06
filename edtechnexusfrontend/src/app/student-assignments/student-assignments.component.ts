@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -10,23 +9,45 @@ import { JwtHelperService } from '@auth0/angular-jwt';
   templateUrl: './student-assignments.component.html',
   styleUrls: ['./student-assignments.component.css']
 })
-export class StudentAssignmentsComponent {
+export class StudentAssignmentsComponent implements OnInit {
 
   assignments: Assignment[] = []; // Define the Assignment type
   courseCodes: string[] = [];
   courseCodeFilter: string = '';
-  filteredAssignments: any[] = []; 
+  filteredAssignments: Assignment[] = []; 
   jwtHelper: JwtHelperService = new JwtHelperService();
 
   constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
-    this.fetchAssignments();
-    this.fetchCourseCodes()
+    const token = sessionStorage.getItem('jwtStudentToken');
+
+    if (!token) {
+      console.error('Token not found in session storage');
+      // Handle the case where the token is missing
+      return;
+    }
+
+    // Decode the token to access its payload
+    const decodedToken = this.jwtHelper.decodeToken(token);
+
+    if (!decodedToken || !decodedToken.student_id) {
+      console.error('Student ID not found in the token payload');
+      // Handle the case where student ID is missing in the payload
+      return;
+    }
+
+    // Get the student ID from the decoded token
+    const studentId = decodedToken.student_id;
+
+    // Fetch assignments using the student ID
+    this.fetchAssignments(studentId);
+    this.fetchCourseCodes();
   }
    
-  fetchAssignments() {
-    this.http.get<Assignment[]>('http://127.0.0.1:8000/assignments/').subscribe(
+  fetchAssignments(studentId: string) {
+    // Make an HTTP request to fetch assignments specific to the student ID
+    this.http.get<Assignment[]>(`http://127.0.0.1:8000/assignment/${studentId}/`).subscribe(
       (response: Assignment[]) => {
         this.assignments = response;
         this.filteredAssignments = [...this.assignments];
@@ -73,21 +94,19 @@ export class StudentAssignmentsComponent {
 
     // Decode the token to access its payload
     const decodedToken = this.jwtHelper.decodeToken(token);
-    console.log(decodedToken)
+
     if (!decodedToken || !decodedToken.student_id) {
-  
       console.error('Student ID not found in the token payload');
       // Handle the case where student ID is missing in the payload
       return;
     }
-
 
     // Make an HTTP request to fetch the assignment details by ID
     this.http.get<Assignment>(`http://127.0.0.1:8000/assignments/${id}/`).subscribe(
       (assignmentDetails: Assignment) => {
         // Navigate to the submission page with the assignment ID, student info, and assignment details as parameters
         this.router.navigate(['/submission', id], {
-          state: { studentInfo:decodedToken.studentInfo, assignmentDetails } // Include studentInfo and assignmentDetails in the state
+          state: { studentInfo: decodedToken.studentInfo, assignmentDetails } // Include studentInfo and assignmentDetails in the state
         });
       },
       (error) => {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Course } from '../models/course.model';
-import { JwtHelperService } from '@auth0/angular-jwt'; // Import JwtHelperService
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-student-course',
@@ -10,18 +10,48 @@ import { JwtHelperService } from '@auth0/angular-jwt'; // Import JwtHelperServic
 })
 export class StudentCourseComponent implements OnInit {
   courses: Course[] = [];
+  enrolledCourses: Course[] = []; // Enrolled courses
   jwtHelper: JwtHelperService = new JwtHelperService(); // Create an instance of JwtHelperService
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.fetchCourses();
+    this.fetchEnrolledCourses(); // Fetch enrolled courses
   }
 
   fetchCourses(): void {
-    // Fetch courses from the backend using HTTP GET request
+    // Fetch all courses from the backend using HTTP GET request
     this.http.get<Course[]>('http://127.0.0.1:8000/courses/').subscribe(data => {
-      this.courses = data;
+      this.courses = data || [];
+      // Check enrollment status for each course
+      this.courses.forEach(course => {
+        course.enrolled = this.isCourseEnrolled(course); // Set enrolled property
+      });
+    });
+  }
+
+  fetchEnrolledCourses(): void {
+    // Retrieve the student's ID from the JWT token
+    const token = sessionStorage.getItem('jwtStudentToken');
+    if (!token) {
+      console.error('Token not found in session storage');
+      return;
+    }
+    const decodedToken = this.jwtHelper.decodeToken(token);
+    if (!decodedToken || !decodedToken.student_id) {
+      console.error('Student ID not found in the token payload');
+      return;
+    }
+    const studentId = decodedToken.student_id;
+
+    // Fetch enrolled courses for the student
+    this.http.get<Course[]>(`http://127.0.0.1:8000/enrollments/${studentId}/`).subscribe(data => {
+      this.enrolledCourses = data || []; // Initialize enrolledCourses as an empty array if data is null
+      // Check enrollment status for each course
+      this.courses.forEach(course => {
+        course.enrolled = this.isCourseEnrolled(course); // Set enrolled property
+      });
     });
   }
 
@@ -37,9 +67,8 @@ export class StudentCourseComponent implements OnInit {
 
     // Decode the token to access its payload
     const decodedToken = this.jwtHelper.decodeToken(token);
-    console.log(decodedToken)
+
     if (!decodedToken || !decodedToken.student_id) {
-  
       console.error('Student ID not found in the token payload');
       // Handle the case where student ID is missing in the payload
       return;
@@ -57,9 +86,27 @@ export class StudentCourseComponent implements OnInit {
     this.http.post('http://127.0.0.1:8000/enroll/', enrollmentData).subscribe(response => {
       console.log('Enrollment request submitted successfully');
       // You can handle the response as needed (e.g., show a success message)
+      // Refresh enrolled courses after successful enrollment
+      this.fetchEnrolledCourses();
     }, error => {
       console.error('Enrollment request failed:', error);
       // Handle the error (e.g., show an error message)
     });
   }
+
+  // Function to check if a course is enrolled by the student
+  isCourseEnrolled(course: Course): boolean {
+    if (!this.enrolledCourses) {
+      return false;
+    }
+  
+    for (const enrolledCourse of this.enrolledCourses) {
+      if (enrolledCourse.course_code === course.course_code) {
+        return true;
+      }
+    }
+  
+    return false;
+  }
+  
 }
