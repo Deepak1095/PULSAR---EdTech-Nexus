@@ -330,6 +330,36 @@ def list_assignments(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @csrf_exempt
+def list_assignments_student(request, student_id):
+    if request.method == 'GET':
+        try:
+            student = Student.objects.get(student_id=student_id)
+        except Student.DoesNotExist:
+            return JsonResponse({'error': 'Student not found'}, status=404)
+        
+        # Get the student's enrollments
+        enrollments = Enrollment.objects.filter(student=student)
+        course_codes = [enrollment.course.course_code for enrollment in enrollments]
+        
+        # Use the course codes to filter assignments
+        assignments = Assignment.objects.filter(course__course_code__in=course_codes)
+        
+        assignment_list = []
+        for assignment in assignments:
+            data = {
+                'id': assignment.id,
+                'title': assignment.title,
+                'description': assignment.description,
+                'due_date': assignment.due_date,
+                'course_code': assignment.course.course_code,
+            }
+            assignment_list.append(data)
+        
+        return JsonResponse(assignment_list, safe=False)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
 def update_delete_assignment(request, pk):
     if request.method == 'GET':
         try:
@@ -369,10 +399,6 @@ def list_enrollments(request):
     return HttpResponse('list_enrollments')
 
 # Submission views
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-
 @csrf_exempt
 def submit_assignment(request, pk):
     assignment = Assignment.objects.get(pk=pk)
@@ -484,7 +510,6 @@ def enroll_student(request):
             data = json.loads(request.body.decode('utf-8'))  # Parse JSON data from the request body
             student_id = data.get('student_id')
             course_code = data.get('course_code')
-            print(f"Received student_id: {student_id}, course_code: {course_code}")
 
             # Check if the student exists
             try:
@@ -498,14 +523,47 @@ def enroll_student(request):
             except Course.DoesNotExist:
                 return JsonResponse({'error': 'Course not found'}, status=404)
 
+            # Check if the student is already enrolled in the course
+            if Enrollment.objects.filter(student=student, course=course).exists():
+                return JsonResponse({'error': 'Student is already enrolled in this course'}, status=400)
+
             # Create an enrollment record using the student and course objects
             enrollment = Enrollment.objects.create(student=student, course=course)
-            
+
             return JsonResponse({'message': 'Enrollment request submitted successfully'})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
+    elif request.method == 'DELETE':
+        # Delete all enrollment data
+        Enrollment.objects.all().delete()
+        return JsonResponse({'message': 'All enrollment data deleted successfully'})
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+def get_enrollment_courses_by_student(request, student_id):
+    try:
+        # Retrieve all enrollment records for the given student
+        enrollments = Enrollment.objects.filter(student__student_id=student_id)
+
+        # Extract course details from enrollments
+        courses_list = []
+
+        # Serialize the courses and mark them as enrolled if they match the enrolled courses
+        for enrollment in enrollments:
+            serialized_course = {
+                'course_code': enrollment.course.course_code,
+                'course_name': enrollment.course.course_name,
+                'department': enrollment.course.department,
+                'credits': enrollment.course.credits,
+                'description': enrollment.course.description,
+                'enrolled': True
+            }
+            courses_list.append(serialized_course)
+
+        return JsonResponse(courses_list, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 
 @csrf_exempt
