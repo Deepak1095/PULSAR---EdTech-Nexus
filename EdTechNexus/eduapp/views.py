@@ -271,7 +271,6 @@ def course_detail(request, pk):
 
 
 # Assignment views
-# views.py
 @csrf_exempt
 def create_assignment(request):
     if request.method == 'POST':
@@ -332,8 +331,22 @@ def list_assignments(request):
 
 @csrf_exempt
 def update_delete_assignment(request, pk):
-    
-    if request.method == 'PUT':
+    if request.method == 'GET':
+        try:
+            assignment = Assignment.objects.get(pk=pk)
+            print(assignment)
+            # Create a dictionary with assignment data
+            assignment_data = {
+                'id': assignment.id,
+                'title': assignment.title,
+                'description': assignment.description,
+                'due_date': assignment.due_date.strftime('%Y-%m-%d'), 
+                'course_code': assignment.course.course_code,
+            }
+            return JsonResponse(assignment_data)
+        except Assignment.DoesNotExist:
+            return JsonResponse({'error': 'Assignment not found'}, status=404)
+    elif request.method == 'PUT':
             assignment = Assignment.objects.get(pk=pk)
             data = json.loads(request.body)
             assignment.title = data['title']
@@ -361,53 +374,50 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 @csrf_exempt
-def assignment_submission(request):
+def submit_assignment(request, pk):
+    assignment = Assignment.objects.get(pk=pk)
+    
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        
-        assignment_id = data.get('assignment_id')
-        student_id = data.get('student_id')
+        student = request.user.student  # Assuming you have a user profile for students
         submission_date = data.get('submission_date')
-        status = data.get('status')
-        remarks = data.get('remarks')
-
-        submission_file = data.get('submission_file')
-        submission_url = data.get('submission_url')
-        submission_text = data.get('submission_text')
-
-        if submission_file:
-            submission = Submission.objects.create(
-                assignment_id=assignment_id,
-                student_id=student_id,
+        status = 'Submitted'
+        submission_choice = data.get('submission_choice')
+        
+        if submission_choice == 'file':
+            submission_file = request.FILES.get('submission_file')
+            submission = Submission(
+                assignment=assignment,
+                student=student,
                 submission_date=submission_date,
                 status=status,
-                remarks=remarks,
                 submission_file=submission_file,
             )
-        elif submission_url:
-            submission = Submission.objects.create(
-                assignment_id=assignment_id,
-                student_id=student_id,
+        elif submission_choice == 'url':
+            submission_url = data.get('submission_url')
+            submission = Submission(
+                assignment=assignment,
+                student=student,
                 submission_date=submission_date,
                 status=status,
-                remarks=remarks,
                 submission_url=submission_url,
             )
-        elif submission_text:
-            submission = Submission.objects.create(
-                assignment_id=assignment_id,
-                student_id=student_id,
+        elif submission_choice == 'text':
+            submission_text = data.get('submission_text')
+            submission = Submission(
+                assignment=assignment,
+                student=student,
                 submission_date=submission_date,
                 status=status,
-                remarks=remarks,
                 submission_text=submission_text,
             )
         else:
-            return JsonResponse({'error': 'No submission data provided.'}, status=400)
-
-        return JsonResponse({'message': 'Assignment submitted successfully.'})
-
-    return JsonResponse({'error': 'Unsupported HTTP method.'}, status=405)
+            return JsonResponse({'error': 'Invalid submission choice.'}, status=400)
+        
+        submission.save()
+        return JsonResponse({'message': 'Assignment submitted successfully!'})
+    
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 
 @csrf_exempt
