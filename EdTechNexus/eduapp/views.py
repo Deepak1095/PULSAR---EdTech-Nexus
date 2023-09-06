@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Instructor,Course,Student,Enrollment,Assignment,Submission
 import json
+from datetime import datetime
 from django.contrib.auth import login, authenticate
 import jwt  # Import JWT library
 # from rest_framework_jwt.settings import api_settings
@@ -401,14 +402,29 @@ def list_enrollments(request):
 # Submission views
 @csrf_exempt
 def submit_assignment(request, pk):
-    assignment = Assignment.objects.get(pk=pk)
+    try:
+        assignment = Assignment.objects.get(pk=pk)
+    except Assignment.DoesNotExist:
+        return JsonResponse({'error': 'Assignment not found.'}, status=404)
     
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        student = request.user.student  # Assuming you have a user profile for students
-        submission_date = data.get('submission_date')
+        student_info = data.get('student_info')  # Assuming you have a user profile for students
+        submission_date_str = data.get('submission_date')
         status = 'Submitted'
         submission_choice = data.get('submission_choice')
+        
+        # Validate and format the submission date
+        try:
+            submission_date = datetime.strptime(submission_date_str, '%Y-%m-%d')
+        except ValueError:
+            return JsonResponse({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
+        
+        # Make sure to correctly set the student field based on the provided student_info
+        try:
+            student = Student.objects.get(user_id=student_info['user_id'])   # Assuming userame is used for identification
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'Student not found.'}, status=404)
         
         if submission_choice == 'file':
             submission_file = request.FILES.get('submission_file')
@@ -440,15 +456,34 @@ def submit_assignment(request, pk):
         else:
             return JsonResponse({'error': 'Invalid submission choice.'}, status=400)
         
-        submission.save()
-        return JsonResponse({'message': 'Assignment submitted successfully!'})
+        try:
+            submission.save()
+            return JsonResponse({'message': 'Assignment submitted successfully!'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
     
     return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
-
 @csrf_exempt
 def list_submissions(request):
-    return HttpResponse('list_submissions')
+    # Fetch a list of submissions from your database
+    submissions = Submission.objects.all()  # You can customize this query as needed
+
+    # Serialize the submissions queryset to JSON
+    serialized_submissions = [{
+        'id': submission.id,
+        'assignment_id': submission.assignment_id,
+        'student_id': submission.student_id,
+        'submission_date': submission.submission_date.strftime('%Y-%m-%d %H:%M:%S'),
+        'status': submission.status,
+        'submission_file_url': submission.submission_file.url if submission.submission_file else None,
+        'submission_url': submission.submission_url,
+        'submission_text': submission.submission_text,
+    } for submission in submissions]
+
+    # Return the serialized data as a JSON response
+    return JsonResponse({'submissions': serialized_submissions})
+
 
 # Department views
 @csrf_exempt

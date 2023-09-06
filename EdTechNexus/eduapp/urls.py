@@ -30,7 +30,7 @@ urlpatterns = [
 
     # Submission URLs
     path('submissions/', views.list_submissions, name='list-submissions'),
-    path('submit_assignment/<int:pk>/', views.submit_assignment, name='submit_assignment'),
+    path('submitAssignment/<int:pk>/', views.submit_assignment, name='submit_assignment'),
 
     # Department URLs
     path('departments/', views.list_departments, name='list-departments'),
