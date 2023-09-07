@@ -15,7 +15,8 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { InstructorAssignmentManagementComponent } from './instructor-assignment-management/instructor-assignment-management.component';
 import { StudentAssignmentsComponent } from './student-assignments/student-assignments.component';
-import { AssignmentSubmissionComponent } from './assignment-submission/assignment-submission.component'; // Import SocketIoModule and SocketIoConfig
+import { AssignmentSubmissionComponent } from './assignment-submission/assignment-submission.component';
+import { StudentDashboardComponent } from './student-dashboard/student-dashboard.component'; // Import SocketIoModule and SocketIoConfig
 
 const socketIoConfig: SocketIoConfig = {
   url: 'ws://127.0.0.1:8000/ws/enrollment/', // Correct WebSocket URL
@@ -35,6 +36,7 @@ const socketIoConfig: SocketIoConfig = {
     InstructorAssignmentManagementComponent,
     StudentAssignmentsComponent,
     AssignmentSubmissionComponent,
+    StudentDashboardComponent,
   ],
   imports: [
     BrowserModule,

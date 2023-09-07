@@ -11,6 +11,7 @@ import { InstructorAssignmentManagementComponent } from './instructor-assignment
 import { StudentAssignmentsComponent } from './student-assignments/student-assignments.component';
 import { AssignmentSubmissionComponent } from './assignment-submission/assignment-submission.component';
 import { TokenAuthGuard } from './guards/token-auth.guard';
+import { StudentDashboardComponent } from './student-dashboard/student-dashboard.component';
 
 const routes: Routes = [
   { path: 'instructor-course-management', component: InstructorCourseManagementComponent, canActivate: [TokenAuthGuard]   },
@@ -19,6 +20,7 @@ const routes: Routes = [
   {path:'instructor-assignment-management',component:InstructorAssignmentManagementComponent, canActivate: [TokenAuthGuard]  },
   {path:'student-assignment-management',component:StudentAssignmentsComponent, canActivate: [TokenAuthGuard] },
   { path: 'submission/:id', component: AssignmentSubmissionComponent, canActivate: [TokenAuthGuard]   },
+  { path: 'student-dashboard', component:StudentDashboardComponent, canActivate: [TokenAuthGuard]   },
   {path:'',component:HomeComponent, pathMatch: 'full'},
   {path:'student-register',component:StudentRegistrationComponent },
   {path:'instructor-login',component:InstructorLoginComponent},
