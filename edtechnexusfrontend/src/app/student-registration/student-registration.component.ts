@@ -35,7 +35,7 @@ export class StudentRegistrationComponent {
     const { email, password, name, date_of_birth, major, contact_number } = this.formData;
 
     // Make an HTTP POST request to register the student
-    this.http.post('https://your-backend-api-url/api/student-registration', {
+    this.http.post('http://127.0.0.1:8000/students/register/', {
       email,
       password,
       name,

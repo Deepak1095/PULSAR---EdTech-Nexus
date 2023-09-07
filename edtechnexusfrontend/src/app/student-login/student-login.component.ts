@@ -20,7 +20,7 @@ export class StudentLoginComponent {
     const { email, password } = this.formData;
   
     // Create a URL for the login request
-    const loginUrl = 'http://localhost:8000/api/login/';
+    const loginUrl = 'http://127.0.0.1:8000/student/login/';
   
     // Prepare the login data
     const loginData = {
@@ -37,7 +37,7 @@ export class StudentLoginComponent {
         sessionStorage.setItem('jwtStudentToken', token);
   
         // Redirect to the dashboard page
-        this.router.navigate(['/instructor-course-management']);
+        this.router.navigate(['/']);
       },
       error: (error) => {
         // Handle student authentication errors

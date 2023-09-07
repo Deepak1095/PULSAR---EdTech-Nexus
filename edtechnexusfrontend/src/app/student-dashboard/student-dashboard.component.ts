@@ -45,7 +45,7 @@ export class StudentDashboardComponent implements OnInit {
     }
 
     // Fetch student details and enrolled courses from the backend
-    this.http.get<{ student_id: string; name: string; gender: string; date_of_birth: string; major: string; email: string; contact_number: string; enrolled_courses: { id: number; course_code: string; course_name: string; }[]}>(`http://localhost:8000/studentDetails/${decodedToken.student_id}/`).subscribe(data => {
+    this.http.get<{ student_id: string; name: string; gender: string; date_of_birth: string; major: string; email: string; contact_number: string; enrolled_courses: { id: number; course_code: string; course_name: string; }[]}>(`http://127.0.0.1:8000/studentDetails/${decodedToken.student_id}/`).subscribe(data => {
       this.studentData = data;
       this.enrolledCourses = data.enrolled_courses;
     });
