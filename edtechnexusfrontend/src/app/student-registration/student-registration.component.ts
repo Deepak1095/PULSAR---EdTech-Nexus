@@ -6,10 +6,9 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-student-registration',
   templateUrl: './student-registration.component.html',
-  styleUrls: ['./student-registration.component.css']
+  styleUrls: ['./student-registration.component.css'],
 })
 export class StudentRegistrationComponent {
-
   formData = {
     email: '',
     password: '',
@@ -17,25 +16,40 @@ export class StudentRegistrationComponent {
     date_of_birth: '',
     major: '',
     contact_number: '',
-    gender:''
+    gender: '',
   };
-  registrationError: string = '';
   isRegistrationSuccessful: boolean = false;
+  isSubmitting: boolean = false;
+  hasFormBeenSubmitted: boolean = false; // Track if the form has been submitted
+  registrationError: string = ''; 
+  isModalOpen: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  saveStudentDetails() {
-    // Validate the form data here (e.g., check if required fields are filled)
 
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
+  saveStudentDetails() {
+    // Mark the form as submitted
+    this.hasFormBeenSubmitted = true;
+
+    // Disable the submit button while submitting
+    this.isSubmitting = true;
+
+    // Check for individual field errors and display them
     if (!this.validateFormData()) {
-      // If form data is not valid, show an error message and return
-      this.registrationError = 'Please fill in all required fields.';
+      // Enable the submit button again when validation fails
+      this.isSubmitting = false;
       return;
     }
 
     // If validation passes, continue with registration
-    const { email, password, name, date_of_birth, major, contact_number,gender } = this.formData;
-    console.log(this.formData)
+    const { email, password, name, date_of_birth, major, contact_number, gender } = this.formData;
+    console.log(this.formData);
+
     // Make an HTTP POST request to register the student
     this.http.post(`${environment.apiUrl}/students/register/`, {
       email,
@@ -44,30 +58,80 @@ export class StudentRegistrationComponent {
       date_of_birth,
       major,
       contact_number,
-      gender
+      gender,
     }).subscribe(
       (response: any) => {
         // Registration successful
         this.isRegistrationSuccessful = true;
-        this.registrationError = '';
+        this.hasFormBeenSubmitted = false; // Reset the form submission flag
+        this.isSubmitting = false;
+        this.isModalOpen = true;
+        this.formData = {
+          email: '',
+          password: '',
+          name: '',
+          date_of_birth: '',
+          major: '',
+          contact_number: '',
+          gender: '',
+        }; // Clear form data
 
-        // Redirect to the login page
-        this.router.navigate(['/student-login']);
       },
       (error) => {
         // Handle registration errors
         console.error('Student registration failed:', error);
         this.registrationError = 'Registration failed. Please try again.';
+        this.isSubmitting = false;
       }
     );
   }
 
   private validateFormData(): boolean {
-    // Implement your form validation logic here
-    // Return true if the form is valid; otherwise, return false
-    const { email, password, name, date_of_birth, major, contact_number } = this.formData;
+    // Implement your individual field validation logic here
+    // Return true if all fields are valid; otherwise, return false
+    const { email, password, name, date_of_birth, major, contact_number, gender } = this.formData;
 
-    // Example validation (you can customize this)
-    return !!email && !!password && !!name && !!date_of_birth && !!major && !!contact_number;
+    // Clear previous error messages
+    this.clearErrorMessages();
+
+    // Example validation for individual fields (you can customize this)
+    const errors: string[] = [];
+    if (!email) {
+      errors.push('Please fill in your email.');
+    }
+    if (!password) {
+      errors.push('Please fill in your password.');
+    }
+    if (!name) {
+      errors.push('Please fill in your name.');
+    }
+    if (!date_of_birth) {
+      errors.push('Please fill in your date of birth.');
+    }
+    if (!major) {
+      errors.push('Please fill in your major.');
+    }
+    if (!contact_number) {
+      errors.push('Please fill in your contact number.');
+    }
+    if (!gender) {
+      errors.push('Please select your gender.');
+    }
+
+    // Display individual field error messages if the form has been submitted
+    if (this.hasFormBeenSubmitted && errors.length > 0) {
+      errors.forEach((error) => {
+        // Log the error or display it in some way
+        console.error(error);
+      });
+      return false;
+    }
+
+    return true;
+  }
+
+  private clearErrorMessages() {
+    // Clear error messages when the form is re-submitted
+    this.registrationError = '';
   }
 }
