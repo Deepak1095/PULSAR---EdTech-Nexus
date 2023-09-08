@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Course } from '../models/course.model';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-student-course',
@@ -22,7 +23,7 @@ export class StudentCourseComponent implements OnInit {
 
   fetchCourses(): void {
     // Fetch all courses from the backend using HTTP GET request
-    this.http.get<Course[]>('http://127.0.0.1:8000/courses/').subscribe(data => {
+    this.http.get<Course[]>(`${environment.apiUrl}/courses/`).subscribe(data => {
       this.courses = data || [];
       // Check enrollment status for each course
       this.courses.forEach(course => {
@@ -46,7 +47,7 @@ export class StudentCourseComponent implements OnInit {
     const studentId = decodedToken.student_id;
 
     // Fetch enrolled courses for the student
-    this.http.get<Course[]>(`http://127.0.0.1:8000/enrollments/${studentId}/`).subscribe(data => {
+    this.http.get<Course[]>(`${environment.apiUrl}/enrollments/${studentId}/`).subscribe(data => {
       this.enrolledCourses = data || []; // Initialize enrolledCourses as an empty array if data is null
       // Check enrollment status for each course
       this.courses.forEach(course => {
@@ -83,7 +84,7 @@ export class StudentCourseComponent implements OnInit {
       // Add any other required data here
     };
 
-    this.http.post('http://127.0.0.1:8000/enroll/', enrollmentData).subscribe(response => {
+    this.http.post(`${environment.apiUrl}/enroll/`, enrollmentData).subscribe(response => {
       console.log('Enrollment request submitted successfully');
       // You can handle the response as needed (e.g., show a success message)
       // Refresh enrolled courses after successful enrollment

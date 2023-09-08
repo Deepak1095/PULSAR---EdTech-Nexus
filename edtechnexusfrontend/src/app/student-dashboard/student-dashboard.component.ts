@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -45,7 +46,7 @@ export class StudentDashboardComponent implements OnInit {
     }
 
     // Fetch student details and enrolled courses from the backend
-    this.http.get<{ student_id: string; name: string; gender: string; date_of_birth: string; major: string; email: string; contact_number: string; enrolled_courses: { id: number; course_code: string; course_name: string; }[]}>(`http://127.0.0.1:8000/studentDetails/${decodedToken.student_id}/`).subscribe(data => {
+    this.http.get<{ student_id: string; name: string; gender: string; date_of_birth: string; major: string; email: string; contact_number: string; enrolled_courses: { id: number; course_code: string; course_name: string; }[]}>(`${environment.apiUrl}/studentDetails/${decodedToken.student_id}/`).subscribe(data => {
       this.studentData = data;
       this.enrolledCourses = data.enrolled_courses;
     });

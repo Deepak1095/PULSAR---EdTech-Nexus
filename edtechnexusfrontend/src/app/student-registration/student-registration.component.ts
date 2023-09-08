@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-student-registration',
@@ -16,6 +17,7 @@ export class StudentRegistrationComponent {
     date_of_birth: '',
     major: '',
     contact_number: '',
+    gender:''
   };
   registrationError: string = '';
   isRegistrationSuccessful: boolean = false;
@@ -32,16 +34,17 @@ export class StudentRegistrationComponent {
     }
 
     // If validation passes, continue with registration
-    const { email, password, name, date_of_birth, major, contact_number } = this.formData;
-
+    const { email, password, name, date_of_birth, major, contact_number,gender } = this.formData;
+    console.log(this.formData)
     // Make an HTTP POST request to register the student
-    this.http.post('http://127.0.0.1:8000/students/register/', {
+    this.http.post(`${environment.apiUrl}/students/register/`, {
       email,
       password,
       name,
       date_of_birth,
       major,
       contact_number,
+      gender
     }).subscribe(
       (response: any) => {
         // Registration successful

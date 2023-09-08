@@ -40,6 +40,20 @@
             placeholder="Enter your contact number">
         </div>
 
+         <!-- Gender -->
+         <div>
+          <label for="gender" class="block text-gray-700 font-medium mb-2">Gender</label>
+          <select id="gender" name="gender" [(ngModel)]="formData.gender" required
+            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
+            <option value="" disabled selected>Please select your gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        
+        
+
         
         <!-- Email Input -->
         <div>

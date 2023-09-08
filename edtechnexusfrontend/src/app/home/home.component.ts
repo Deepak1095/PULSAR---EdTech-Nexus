@@ -9,8 +9,7 @@ export class HomeComponent {
   constructor() {
     // Access environment variables in the constructor or other methods
     console.log(environment.production); // Example: false
-    console.log(environment.apiUrl);      // Example: 'https://api.example.com'
-    console.log(environment.apiKey);      // Example: 'your_development_api_key'
+    console.log(environment.apiUrl);      // Example: 'https://api.example.com'   // Example: 'your_development_api_key'
     console.log(environment.debug); 
   }
 }

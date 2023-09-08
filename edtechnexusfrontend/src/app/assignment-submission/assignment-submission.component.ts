@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-assignment-submission',
@@ -73,7 +74,7 @@ export class AssignmentSubmissionComponent implements OnInit {
     console.log(submissionData)
   
     // Make an HTTP POST request to your backend API URL with the submissionData object
-    this.http.post(`http://127.0.0.1:8000/submitAssignment/${this.assignmentId}/`, submissionData).subscribe(
+    this.http.post(`${environment.apiUrl}/submitAssignment/${this.assignmentId}/`, submissionData).subscribe(
       (response) => {
         console.log('Submission successful:', response);
         this.isSubmitted = true;

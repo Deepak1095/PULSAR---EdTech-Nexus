@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Assignment } from '../models/assignment.model';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-student-assignments',
@@ -47,7 +49,7 @@ export class StudentAssignmentsComponent implements OnInit {
    
   fetchAssignments(studentId: string) {
     // Make an HTTP request to fetch assignments specific to the student ID
-    this.http.get<Assignment[]>(`http://127.0.0.1:8000/assignment/${studentId}/`).subscribe(
+    this.http.get<Assignment[]>(`${environment.apiUrl}/assignment/${studentId}/`).subscribe(
       (response: Assignment[]) => {
         this.assignments = response;
         this.filteredAssignments = [...this.assignments];
@@ -60,7 +62,7 @@ export class StudentAssignmentsComponent implements OnInit {
 
   fetchCourseCodes() {
     // Make an HTTP request to your backend to fetch course codes
-    this.http.get<any[]>('http://127.0.0.1:8000/courses/').subscribe(
+    this.http.get<any[]>(`${environment.apiUrl}/courses/`).subscribe(
       (response: any[]) => {
         // Extract course codes from the response and store them in the courseCodes array
         this.courseCodes = response.map((course) => course.course_code);
@@ -102,7 +104,7 @@ export class StudentAssignmentsComponent implements OnInit {
     }
 
     // Make an HTTP request to fetch the assignment details by ID
-    this.http.get<Assignment>(`http://127.0.0.1:8000/assignments/${id}/`).subscribe(
+    this.http.get<Assignment>(`${environment.apiUrl}/assignments/${id}/`).subscribe(
       (assignmentDetails: Assignment) => {
         // Navigate to the submission page with the assignment ID, student info, and assignment details as parameters
         this.router.navigate(['/submission', id], {

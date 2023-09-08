@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Course } from '../models/course.model';
 import { Socket } from 'ngx-socket-io'; // Import Socket from ngx-socket-io
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-instructor-course-management',
@@ -29,7 +30,7 @@ export class InstructorCourseManagementComponent implements OnInit {
 
   fetchCourses(): void {
     // Fetch courses from the backend using HTTP GET request
-    this.http.get<Course[]>('http://127.0.0.1:8000/courses/').subscribe(data => {
+    this.http.get<Course[]>(`${environment.apiUrl}/courses/`).subscribe(data => {
       console.log(data);
       this.courses = data;
     });
@@ -44,7 +45,7 @@ export class InstructorCourseManagementComponent implements OnInit {
     console.log(this.newCourse);
 
     // Create a new course using HTTP POST request
-    this.http.post('http://127.0.0.1:8000/courses/', this.newCourse, httpOptions).subscribe(() => {
+    this.http.post(`${environment.apiUrl}/courses/`, this.newCourse, httpOptions).subscribe(() => {
       this.fetchCourses();
       this.newCourse = new Course();
       this.showCreateCourseForm = !this.showCreateCourseForm;
@@ -63,7 +64,7 @@ export class InstructorCourseManagementComponent implements OnInit {
   updateCourse(): void {
     if (this.selectedCourse) {
       // Update the selected course using HTTP PUT request
-      this.http.put(`http://127.0.0.1:8000/courses/${this.selectedCourse.id}/`, this.selectedCourse).subscribe(() => {
+      this.http.put(`${environment.apiUrl}/courses/${this.selectedCourse.id}/`, this.selectedCourse).subscribe(() => {
         this.fetchCourses();
         this.cancelEdit();
       });
@@ -79,7 +80,7 @@ export class InstructorCourseManagementComponent implements OnInit {
   deleteCourse(id: any): void {
     // Delete the course using HTTP DELETE request
     if (this.selectedCourse) {
-      this.http.delete(`http://127.0.0.1:8000/courses/${id}/`).subscribe(() => {
+      this.http.delete(`${environment.apiUrl}/courses/${id}/`).subscribe(() => {
         this.fetchCourses();
         this.cancelDelete();
       });
@@ -116,7 +117,7 @@ export class InstructorCourseManagementComponent implements OnInit {
 
   viewEnrollments(course: Course): void {
     // Send a request to your backend to fetch enrollments for the selected course
-    this.http.get<any[]>(`http://127.0.0.1:8000/courses/${course.id}/enrollments/`).subscribe(enrollments => {
+    this.http.get<any[]>(`${environment.apiUrl}/courses/${course.id}/enrollments/`).subscribe(enrollments => {
       console.log('Enrollments for course:', enrollments);
 
       // You can display the enrollments data as needed, for example, in a modal

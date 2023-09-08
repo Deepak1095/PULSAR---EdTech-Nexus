@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Instructor } from '../models/instructor.model';
+import { environment } from 'src/environments/environment';
+import * as e from 'cors';
+
 
 @Component({
   selector: 'app-instructor-management',
@@ -27,7 +30,7 @@ export class InstructorManagementComponent implements OnInit {
 
   fetchInstructors(): void {
     // Fetch instructors from the backend using HTTP GET request
-    this.http.get<Instructor[]>('http://127.0.0.1:8000/instructors/').subscribe(data => {
+    this.http.get<Instructor[]>(`${environment.apiUrl}/instructors/`).subscribe(data => {
       console.log('data',data)
       this.instructors = data;
     });
@@ -41,7 +44,7 @@ export class InstructorManagementComponent implements OnInit {
     };
   
     // Create a new instructor using HTTP POST request
-    this.http.post('http://127.0.0.1:8000/instructors/', this.newInstructor,httpOptions).subscribe(() => {
+    this.http.post(`${environment.apiUrl}/instructors/`, this.newInstructor,httpOptions).subscribe(() => {
       this.fetchInstructors();
       this.newInstructor = new Instructor();
       this.showCreateInstructorForm = !this.showCreateInstructorForm;
@@ -59,7 +62,7 @@ export class InstructorManagementComponent implements OnInit {
   updateInstructor(): void {
     if (this.selectedInstructor) {
       // Update the selected instructor using HTTP PUT request
-      this.http.put(`http://127.0.0.1:8000/instructors/${this.selectedInstructor.id}/`, this.selectedInstructor).subscribe(() => {
+      this.http.put(`${environment.apiUrl}/instructors/${this.selectedInstructor.id}/`, this.selectedInstructor).subscribe(() => {
         this.fetchInstructors();
         this.cancelEdit();
       });
@@ -76,7 +79,7 @@ export class InstructorManagementComponent implements OnInit {
   deleteInstructor(id:any): void {
     // Delete the instructor using HTTP DELETE request
     if (this.selectedInstructor) {
-    this.http.delete(`http://127.0.0.1:8000/instructors/${id}/`).subscribe(() => {
+    this.http.delete(`${environment.apiUrl}/instructors/${id}/`).subscribe(() => {
       this.fetchInstructors();
       this.cancelDelete()
     });

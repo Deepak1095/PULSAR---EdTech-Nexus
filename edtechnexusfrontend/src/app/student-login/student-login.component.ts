@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-student-login',
@@ -20,7 +21,7 @@ export class StudentLoginComponent {
     const { email, password } = this.formData;
   
     // Create a URL for the login request
-    const loginUrl = 'http://127.0.0.1:8000/student/login/';
+    const loginUrl = `${environment.apiUrl}/student/login/`;
   
     // Prepare the login data
     const loginData = {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Assignment } from '../models/assignment.model'; // Import the Assignment model
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-instructor-assignment-management',
@@ -30,7 +31,7 @@ export class InstructorAssignmentManagementComponent implements OnInit {
   }
 
   createAssignment() {
-    this.http.post('http://127.0.0.1:8000/assignments/create/', this.assignmentData).subscribe(
+    this.http.post(`${environment.apiUrl}/assignments/create/`, this.assignmentData).subscribe(
       (response: any) => {
         console.log('Assignment created:', response.message);
         this.isFormVisible = false; // Hide the form after successful submission
@@ -43,7 +44,7 @@ export class InstructorAssignmentManagementComponent implements OnInit {
   }
 
   fetchAssignments() {
-    this.http.get<Assignment[]>('http://127.0.0.1:8000/assignments/').subscribe(
+    this.http.get<Assignment[]>(`${environment.apiUrl}/assignments/`).subscribe(
       (response: Assignment[]) => {
         this.assignments = response;
         this.filteredAssignments = [...this.assignments];
@@ -65,7 +66,7 @@ export class InstructorAssignmentManagementComponent implements OnInit {
   }
   updateAssignment() {
     if (this.editingAssignment) {
-      this.http.put(`http://127.0.0.1:8000/assignments/${this.editingAssignment.id}/`, this.editingAssignment).subscribe(
+      this.http.put(`${environment.apiUrl}/assignments/${this.editingAssignment.id}/`, this.editingAssignment).subscribe(
         (response: any) => {
           console.log('Assignment updated:', response.message);
           this.fetchAssignments(); // Fetch updated assignments
@@ -94,7 +95,7 @@ export class InstructorAssignmentManagementComponent implements OnInit {
   }
 
   deleteAssignment(id: any): void {
-    this.http.delete(`http://127.0.0.1:8000/assignments/${id}/`).subscribe(
+    this.http.delete(`${environment.apiUrl}/assignments/${id}/`).subscribe(
       (response: any) => {
         console.log('Assignment deleted:', response.message);
         this.fetchAssignments(); // Fetch updated assignments
@@ -108,7 +109,7 @@ export class InstructorAssignmentManagementComponent implements OnInit {
 
   fetchCourseCodes() {
     // Make an HTTP request to your backend to fetch course codes
-    this.http.get<any[]>('http://127.0.0.1:8000/courses/').subscribe(
+    this.http.get<any[]>(`${environment.apiUrl}/courses/`).subscribe(
       (response: any[]) => {
         // Extract course codes from the response and store them in the courseCodes array
         this.courseCodes = response.map((course) => course.course_code);
