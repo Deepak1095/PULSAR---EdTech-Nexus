@@ -16,6 +16,9 @@ export class InstructorCourseManagementComponent implements OnInit {
   showCreateCourseForm: boolean = false;
   showUpdateCourseForm: boolean = false;
   showDeleteConfirmModal: boolean = false;
+  isCreating = false;
+  isUpdating = false;
+  isDeleting = false;
 
   constructor(private http: HttpClient) {} // Inject Socket
 
@@ -42,13 +45,14 @@ export class InstructorCourseManagementComponent implements OnInit {
         'Content-Type': 'application/json'
       })
     };
-    console.log(this.newCourse);
+    this.isCreating=!this.isCreating
 
     // Create a new course using HTTP POST request
     this.http.post(`${environment.apiUrl}/courses/`, this.newCourse, httpOptions).subscribe(() => {
       this.fetchCourses();
       this.newCourse = new Course();
       this.showCreateCourseForm = !this.showCreateCourseForm;
+      this.isCreating=!this.isCreating
     });
   }
 
@@ -64,9 +68,11 @@ export class InstructorCourseManagementComponent implements OnInit {
   updateCourse(): void {
     if (this.selectedCourse) {
       // Update the selected course using HTTP PUT request
+      this.isUpdating=!this.isUpdating
       this.http.put(`${environment.apiUrl}/courses/${this.selectedCourse.id}/`, this.selectedCourse).subscribe(() => {
         this.fetchCourses();
         this.cancelEdit();
+        this.isUpdating=!this.isUpdating
       });
     }
   }
@@ -80,9 +86,11 @@ export class InstructorCourseManagementComponent implements OnInit {
   deleteCourse(id: any): void {
     // Delete the course using HTTP DELETE request
     if (this.selectedCourse) {
+      this.isDeleting=!this.isDeleting
       this.http.delete(`${environment.apiUrl}/courses/${id}/`).subscribe(() => {
         this.fetchCourses();
         this.cancelDelete();
+        this.isDeleting=!this.isDeleting
       });
     }
   }
