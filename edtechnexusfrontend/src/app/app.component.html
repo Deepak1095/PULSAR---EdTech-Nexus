@@ -39,7 +39,6 @@
             <li><a routerLink="/student-register" (click)="closeMobileMenu()" class="block px-4 py-2 hover:bg-blue-100">Register</a></li>
             <li><a routerLink="/student-login" (click)="closeMobileMenu()" class="block px-4 py-2 hover:bg-blue-100">Login</a></li>
             <li><a routerLink="/settings" (click)="closeMobileMenu()" class="block px-4 py-2 hover:bg-blue-100">Settings</a></li>
-            <!-- Add more options as needed -->
           </ul>
         </div>
       </div>
@@ -65,7 +64,7 @@
         <ul *ngIf="isProfileDropdownOpen" class="absolute right-0 mt-8 w-40 bg-white text-blue-500 rounded-lg shadow-md space-y-2">
           <li>
             <a *ngIf="isLoggedIn" (click)="logout()" class="block px-4 py-2 hover:bg-blue-100">Logout</a>
-              <a *ngIf="!isLoggedIn"  routerLink="/student-login" (click)="onLogin()" class="block px-4 py-2 hover:bg-blue-100">Login</a>
+              <a *ngIf="!isLoggedIn"  routerLink="/student-login" class="block px-4 py-2 hover:bg-blue-100">Login</a>
           </li>
           <li><a routerLink="/settings" class="block px-4 py-2 hover:bg-blue-100">Settings</a></li>
           <!-- Add more options as needed -->
@@ -153,6 +152,3 @@
     </div>
 </footer>
 </div>
-
-
-

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-
+import { AuthService } from '../auth.service';
 @Component({
   selector: 'app-student-login',
   templateUrl: './student-login.component.html',
@@ -15,7 +15,7 @@ export class StudentLoginComponent {
   };
   loginError: string = '';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router,private authService: AuthService) {}
 
   onSubmit() {
     const { email, password } = this.formData;
@@ -36,7 +36,7 @@ export class StudentLoginComponent {
   
         // Store the token in session storage
         sessionStorage.setItem('jwtStudentToken', token);
-  
+        this.authService.login();
         // Redirect to the dashboard page
         this.router.navigate(['/']);
       },
